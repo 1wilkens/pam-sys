@@ -18,9 +18,9 @@ extern "C" {
     /* -------------- The Linux-PAM Framework layer API ------------- */
 
     pub fn pam_start(service_name: *const c_char, user: *const c_char,
-        pam_conversation: *const PamConv, pamh: *mut *const PamHandle) -> c_int;
+        pam_conversation: *const PamConv, pamh: *const *mut PamHandle) -> c_int;
 
-    pub fn pam_end(pamh: *const PamHandle, pam_status: c_int) -> c_int;
+    pub fn pam_end(pamh: *mut PamHandle, pam_status: c_int) -> c_int;
 
     /* Authentication API's */
     pub fn pam_authenticate(pamh: *mut PamHandle, flags: c_int) -> c_int;
