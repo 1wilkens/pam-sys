@@ -1,6 +1,6 @@
 extern crate libc;
 
-use libc::{c_char, c_int};
+use libc::{c_char, c_int, c_void};
 
 #[repr(C)]
 #[derive(Copy)]
@@ -8,7 +8,10 @@ pub struct PamHandle;
 
 #[repr(C)]
 #[derive(Copy)]
-pub struct PamConv;
+pub struct PamConv {
+    pub conv: *const c_void,
+    pub data_ptr: *mut c_void
+}
 
 extern "C" {
     /* --------------             pam_appl.h            ------------- */
