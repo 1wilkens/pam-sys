@@ -1,8 +1,12 @@
 [package]
 
 name = "pam-sys"
-version = "0.0.1"
+version = "0.0.1-pre"
 authors = ["Florian Wilkens <mrfloya_github@outlook.com>"]
+description = "FFI wrappers for the Linux Pluggable Authentication Modules (PAM)"
+readme = "README.md"
+license = "MIT"
+
 build = "build.rs"
 links = "pam"
 

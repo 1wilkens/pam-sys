@@ -56,6 +56,37 @@ pub enum PamReturnCode {
                                     is completed */
 }
 
+pub enum PamFlag {
+    PAM_SILENT                  = 0x8000,
+
+    /* Note: these flags are used by pam_authenticate{,_secondary}() */
+
+    /* The authentication service should return PAM_AUTH_ERROR if the
+     * user has a null authentication token */
+    PAM_DISALLOW_NULL_AUTHTOK   = 0x0001,
+
+    /* Note: these flags are used for pam_setcred() */
+
+    /* Set user credentials for an authentication service */
+    PAM_ESTABLISH_CRED          = 0x0002,
+
+    /* Delete user credentials associated with an authentication service */
+    PAM_DELETE_CRED             = 0x0004,
+
+    /* Reinitialize user credentials */
+    PAM_REINITIALIZE_CRED       = 0x0008,
+
+    /* Extend lifetime of user credentials */
+    PAM_REFRESH_CRED            = 0x0010,
+
+    /* Note: these flags are used by pam_chauthtok */
+
+    /* The password service should only update those passwords that have
+     * aged.  If this flag is not passed, the password service should
+     * update all passwords. */
+    PAM_CHANGE_EXPIRED_AUTHTOK  = 0x0020
+}
+
 pub enum PamItemType {
     /* These defines are used by pam_set_item() and pam_get_item().
     Please check the spec which are allowed for use by applications
@@ -76,4 +107,11 @@ pub enum PamItemType {
     XDISPLAY        = 11,   /* X display name */
     XAUTHDATA       = 12,   /* X server authentication data */
     AUTHTOK_TYPE    = 13    /* The type for pam_get_authtok */
+}
+
+pub enum PamMessageStyle {
+    PAM_PROMPT_ECHO_OFF = 1,
+    PAM_PROMPT_ECHO_ON  = 2,
+    PAM_ERROR_MSG       = 3,
+    PAM_TEXT_INFO       = 4
 }

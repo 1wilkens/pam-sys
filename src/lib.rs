@@ -1,9 +1,8 @@
 extern crate libc;
 
-pub use constants::*;
 pub use enums::*;
 
-mod constants;
+#[allow(non_camel_case_types)]
 mod enums;
 
 use libc::{c_char, c_int, c_void};
@@ -14,16 +13,41 @@ pub struct PamHandle;
 
 #[repr(C)]
 #[derive(Copy)]
-pub struct PamConv {
-    pub conv: *const c_void,
-    pub data_ptr: *mut c_void
+pub struct PamMessage {
+    pub message_style:  c_int,
+    pub msg:            *const c_char
+}
+
+#[repr(C)]
+#[derive(Copy)]
+pub struct PamResponse {
+    pub resp:           *mut c_char,
+    pub resp_retcode:   c_int
+}
+
+#[repr(C)]
+#[derive(Copy)]
+pub struct PamConversation {
+    /* int (*conv)(int num_msg, const struct pam_message **msg,
+		struct pam_response **resp, void *appdata_ptr); */
+    pub conv:       *const c_void,
+    pub data_ptr:   *mut c_void
+}
+
+#[repr(C)]
+#[derive(Copy)]
+pub struct PamXAuthData {
+    pub namelen:    c_int,
+    pub name:       *mut c_char,
+    pub datalen:    c_int,
+    pub data:       *mut c_char
 }
 
 extern "C" {
     /* ------------------------ pam_appl.h -------------------------- */
     /* -------------- The Linux-PAM Framework layer API ------------- */
     pub fn pam_start(service_name: *const c_char, user: *const c_char,
-        pam_conversation: *const PamConv, pamh: *mut *const PamHandle) -> c_int;
+        pam_conversation: *const PamConversation, pamh: *mut *const PamHandle) -> c_int;
 
     pub fn pam_end(pamh: *mut PamHandle, pam_status: c_int) -> c_int;
 
