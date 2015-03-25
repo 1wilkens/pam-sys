@@ -1,3 +1,43 @@
+use libc::{c_char, c_int, c_void};
+
+#[repr(C)]
+#[derive(Copy)]
+pub struct PamHandle;
+
+#[repr(C)]
+#[derive(Debug, Copy)]
+pub struct PamMessage {
+    pub msg_style:  c_int,
+    pub msg:        *const c_char
+}
+
+#[repr(C)]
+#[derive(Debug, Copy)]
+pub struct PamResponse {
+    pub resp:           *mut c_char,
+    pub resp_retcode:   c_int
+}
+
+#[repr(C)]
+#[derive(Copy)]
+pub struct PamConversation {
+    /* int (*conv)(int num_msg, const struct pam_message **msg,
+		struct pam_response **resp, void *appdata_ptr); */
+    pub conv:       Option<extern "C" fn (c_int, *mut *mut PamMessage, *mut *mut PamResponse, *mut c_void) -> c_int>,
+    //pub conv:       *const c_void,
+    pub data_ptr:   *mut c_void
+}
+
+#[repr(C)]
+#[derive(Debug, Copy)]
+pub struct PamXAuthData {
+    pub namelen:    c_int,
+    pub name:       *mut c_char,
+    pub datalen:    c_int,
+    pub data:       *mut c_char
+}
+
+#[derive(Debug, PartialEq)]
 pub enum PamReturnCode {
     SUCCESS                 = 0,    /* Successful function return */
     OPEN_ERR                = 1,    /* dlopen() failure when dynamically
@@ -56,37 +96,81 @@ pub enum PamReturnCode {
                                     is completed */
 }
 
+impl PamReturnCode {
+    pub fn from_i32(status: i32) -> PamReturnCode {
+        match status {
+            0   => PamReturnCode::SUCCESS               ,
+            1   => PamReturnCode::OPEN_ERR              ,
+            2   => PamReturnCode::SYMBOL_ERR            ,
+            3   => PamReturnCode::SERVICE_ERR           ,
+            4   => PamReturnCode::SYSTEM_ERR            ,
+            5   => PamReturnCode::BUF_ERR               ,
+            6   => PamReturnCode::PERM_DENIED           ,
+            7   => PamReturnCode::AUTH_ERR              ,
+            8   => PamReturnCode::CRED_INSUFFICIENT     ,
+            9   => PamReturnCode::AUTHINFO_UNAVAIL      ,
+            10  => PamReturnCode::USER_UNKNOWN          ,
+            11  => PamReturnCode::MAXTRIES              ,
+            12  => PamReturnCode::NEW_AUTHTOK_REQD      ,
+            13  => PamReturnCode::ACCT_EXPIRED          ,
+            14  => PamReturnCode::SESSION_ERR           ,
+            15  => PamReturnCode::CRED_UNAVAIL          ,
+            16  => PamReturnCode::CRED_EXPIRED          ,
+            17  => PamReturnCode::CRED_ERR              ,
+            18  => PamReturnCode::NO_MODULE_DATA        ,
+            19  => PamReturnCode::CONV_ERR              ,
+            20  => PamReturnCode::AUTHTOK_ERR           ,
+            21  => PamReturnCode::AUTHTOK_RECOVERY_ERR  ,
+            22  => PamReturnCode::AUTHTOK_LOCK_BUSY     ,
+            23  => PamReturnCode::AUTHTOK_DISABLE_AGING ,
+            24  => PamReturnCode::TRY_AGAIN             ,
+            25  => PamReturnCode::IGNORE                ,
+            26  => PamReturnCode::ABORT                 ,
+            27  => PamReturnCode::AUTHTOK_EXPIRED       ,
+            28  => PamReturnCode::MODULE_UNKNOWN        ,
+            29  => PamReturnCode::BAD_ITEM              ,
+            30  => PamReturnCode::CONV_AGAIN            ,
+            31  => PamReturnCode::INCOMPLETE            ,
+            _   => PamReturnCode::SYSTEM_ERR
+        }
+    }
+}
+
+#[derive(Debug, PartialEq)]
 pub enum PamFlag {
-    PAM_SILENT                  = 0x8000,
+    SILENT                  = 0x8000,
 
     /* Note: these flags are used by pam_authenticate{,_secondary}() */
 
-    /* The authentication service should return PAM_AUTH_ERROR if the
+    /* The authentication service should return AUTH_ERROR if the
      * user has a null authentication token */
-    PAM_DISALLOW_NULL_AUTHTOK   = 0x0001,
+    DISALLOW_NULL_AUTHTOK   = 0x0001,
 
     /* Note: these flags are used for pam_setcred() */
 
     /* Set user credentials for an authentication service */
-    PAM_ESTABLISH_CRED          = 0x0002,
+    ESTABLISH_CRED          = 0x0002,
 
     /* Delete user credentials associated with an authentication service */
-    PAM_DELETE_CRED             = 0x0004,
+    DELETE_CRED             = 0x0004,
 
     /* Reinitialize user credentials */
-    PAM_REINITIALIZE_CRED       = 0x0008,
+    REINITIALIZE_CRED       = 0x0008,
 
     /* Extend lifetime of user credentials */
-    PAM_REFRESH_CRED            = 0x0010,
+    REFRESH_CRED            = 0x0010,
 
     /* Note: these flags are used by pam_chauthtok */
 
     /* The password service should only update those passwords that have
      * aged.  If this flag is not passed, the password service should
      * update all passwords. */
-    PAM_CHANGE_EXPIRED_AUTHTOK  = 0x0020
+    CHANGE_EXPIRED_AUTHTOK  = 0x0020,
+
+    NONE                    = 0
 }
 
+#[derive(Debug, PartialEq)]
 pub enum PamItemType {
     /* These defines are used by pam_set_item() and pam_get_item().
     Please check the spec which are allowed for use by applications
@@ -109,9 +193,22 @@ pub enum PamItemType {
     AUTHTOK_TYPE    = 13    /* The type for pam_get_authtok */
 }
 
+#[derive(Debug, PartialEq)]
 pub enum PamMessageStyle {
-    PAM_PROMPT_ECHO_OFF = 1,
-    PAM_PROMPT_ECHO_ON  = 2,
-    PAM_ERROR_MSG       = 3,
-    PAM_TEXT_INFO       = 4
+    PROMPT_ECHO_OFF = 1,
+    PROMPT_ECHO_ON  = 2,
+    ERROR_MSG       = 3,
+    TEXT_INFO       = 4
+}
+
+impl PamMessageStyle {
+    pub fn from_i32(style: i32) -> PamMessageStyle {
+        match style {
+            1 => PamMessageStyle::PROMPT_ECHO_OFF,
+            2 => PamMessageStyle::PROMPT_ECHO_ON,
+            3 => PamMessageStyle::ERROR_MSG,
+            4 => PamMessageStyle::TEXT_INFO,
+            _ => PamMessageStyle::ERROR_MSG
+        }
+    }
 }
