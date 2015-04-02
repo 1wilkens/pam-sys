@@ -1,1 +1,3 @@
-# pam-sys
+# pam-sys [![Build Status](https://travis-ci.org/MrFloya/pam-sys.svg?branch=master)](https://travis-ci.org/MrFloya/pam-sys)
+
+Rust FFI wrappers for the Linux Pluggable Authentication Modules (PAM).
