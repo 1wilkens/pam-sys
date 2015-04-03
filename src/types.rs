@@ -1,25 +1,23 @@
 use libc::{c_char, c_int, c_void};
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct PamHandle;
 
 #[repr(C)]
-#[derive(Debug, Copy)]
+#[derive(Debug)]
 pub struct PamMessage {
     pub msg_style:  c_int,
     pub msg:        *const c_char
 }
 
 #[repr(C)]
-#[derive(Debug, Copy)]
+#[derive(Debug)]
 pub struct PamResponse {
     pub resp:           *mut c_char,
     pub resp_retcode:   c_int
 }
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct PamConversation {
     /* int (*conv)(int num_msg, const struct pam_message **msg,
 		struct pam_response **resp, void *appdata_ptr); */
@@ -29,7 +27,7 @@ pub struct PamConversation {
 }
 
 #[repr(C)]
-#[derive(Debug, Copy)]
+#[derive(Debug)]
 pub struct PamXAuthData {
     pub namelen:    c_int,
     pub name:       *mut c_char,
