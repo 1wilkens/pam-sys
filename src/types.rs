@@ -1,8 +1,26 @@
+//! Types defined by Linux-PAM
+//!
+//! This modules contains struct and enum definitions used by `pam-sys`.
+
 use libc::{c_char, c_int, c_void};
 
+/// Opaque struct internal to Linux-PAM
+///
+/// From `_pam_types.h`:
+///
+/// "This is a blind structure. Users aren't allowed to see
+/// inside a pam_handle_t, so we don't define struct pam_handle here.
+/// This is defined in a file private to the PAM library.
+/// (i.e., it's private to PAM service modules, too!)"
 #[repr(C)]
 pub struct PamHandle;
 
+/// Message struct to transfer authentication data to the user
+///
+/// From `_pam_types.h`:
+///
+/// "Used to pass prompting text, error messages, or other informatory text to the user.
+/// This structure is allocated and freed by the PAM library (or loaded module)."
 #[repr(C)]
 #[derive(Debug)]
 pub struct PamMessage {
@@ -10,13 +28,27 @@ pub struct PamMessage {
     pub msg:        *const c_char
 }
 
+
+/// Response struct to transfer the user's response back to Linux-PAM
+///
+/// From `_pam_types.h`:
+///
+/// "Used to return the user's response to the PAM library.
+/// This structure is allocated by the application program,
+/// and free()'d by the Linux-PAM library (or calling module)."
 #[repr(C)]
 #[derive(Debug)]
 pub struct PamResponse {
     pub resp:           *mut c_char,
+    /// currently un-used, zero expected
     pub resp_retcode:   c_int
 }
 
+/// Conversation structure containing the `converse` function and authentication data
+///
+/// From `_pam_types.h`:
+///
+/// "The actual conversation structure itself"
 #[repr(C)]
 pub struct PamConversation {
     /* int (*conv)(int num_msg, const struct pam_message **msg,
@@ -26,6 +58,13 @@ pub struct PamConversation {
     pub data_ptr:   *mut c_void
 }
 
+/// Special struct for the PAM_XAUTHDATA pam item
+///
+/// From `_pam_types.h`:
+///
+/// "Used by the PAM_XAUTHDATA pam item. Contains X authentication
+/// data used by modules to connect to the user's X display.
+/// Note: this structure is intentionally compatible with xcb_auth_info_t."
 #[repr(C)]
 #[derive(Debug)]
 pub struct PamXAuthData {
@@ -35,63 +74,109 @@ pub struct PamXAuthData {
     pub data:       *mut c_char
 }
 
+/// The Linux-PAM return values
 #[derive(Debug, PartialEq)]
 pub enum PamReturnCode {
-    SUCCESS                 = 0,    /* Successful function return */
-    OPEN_ERR                = 1,    /* dlopen() failure when dynamically
-                                    loading a service module */
-    SYMBOL_ERR              = 2,    /* Symbol not found */
-    SERVICE_ERR             = 3,    /* Error in service module */
-    SYSTEM_ERR              = 4,    /* System error */
-    BUF_ERR                 = 5,    /* Memory buffer error */
-    PERM_DENIED             = 6,    /* Permission denied */
-    AUTH_ERR                = 7,    /* Authentication failure */
-    CRED_INSUFFICIENT       = 8,    /* Can not access authentication data
-                                    due to insufficient credentials */
-    AUTHINFO_UNAVAIL        = 9,    /* Underlying authentication service
-                                    can not retrieve authentication
-                                    information  */
-    USER_UNKNOWN            = 10,   /* User not known to the underlying
-                                    authenticaiton module */
-    MAXTRIES                = 11,   /* An authentication service has
-                                    maintained a retry count which has
-                                    been reached.  No further retries
-                                    should be attempted */
-    NEW_AUTHTOK_REQD        = 12,   /* New authentication token required.
-                                    This is normally returned if the
-                                    machine security policies require
-                                    that the password should be changed
-                                    beccause the password is NULL or it
-                                    has aged */
-    ACCT_EXPIRED            = 13,   /* User account has expired */
-    SESSION_ERR             = 14,   /* Can not make/remove an entry for
-                                    the specified session */
-    CRED_UNAVAIL            = 15,   /* Underlying authentication service
-                                    can not retrieve user credentials
-                                    unavailable */
-    CRED_EXPIRED            = 16,   /* User credentials expired */
-    CRED_ERR                = 17,   /* Failure setting user credentials */
-    NO_MODULE_DATA          = 18,   /* No module specific data is present */
-    CONV_ERR                = 19,   /* Conversation error */
-    AUTHTOK_ERR             = 20,   /* Authentication token manipulation error */
-    AUTHTOK_RECOVERY_ERR    = 21,   /* Authentication information
-                                    cannot be recovered */
-    AUTHTOK_LOCK_BUSY       = 22,   /* Authentication token lock busy */
-    AUTHTOK_DISABLE_AGING   = 23,   /* Authentication token aging disabled */
-    TRY_AGAIN               = 24,   /* Preliminary check by password service */
-    IGNORE                  = 25,   /* Ignore underlying account module
-                                    regardless of whether the control
-                                    flag is required, optional, or sufficient */
-    ABORT                   = 26,   /* Critical error (?module fail now request) */
-    AUTHTOK_EXPIRED         = 27,   /* user's authentication token has expired */
-    MODULE_UNKNOWN          = 28,   /* module is not known */
-    BAD_ITEM                = 29,   /* Bad item passed to pam_*_item() */
-    CONV_AGAIN              = 30,   /* conversation function is event driven
-                                    and data is not available yet */
-    INCOMPLETE              = 31    /* please call this function again to
-                                    complete authentication stack. Before
-                                    calling again, verify that conversation
-                                    is completed */
+    /// Successful function return
+    SUCCESS                 = 0,
+
+    /// dlopen() failure when dynamically loading a service module
+    OPEN_ERR                = 1,
+
+    /// Symbol not found
+    SYMBOL_ERR              = 2,
+
+    /// Error in service module
+    SERVICE_ERR             = 3,
+
+    /// System error
+    SYSTEM_ERR              = 4,
+
+    /// Memory buffer error
+    BUF_ERR                 = 5,
+
+    /// Permission denied
+    PERM_DENIED             = 6,
+
+    /// Authentication failure
+    AUTH_ERR                = 7,
+
+    /// Can not access authentication data due to insufficient credentials
+    CRED_INSUFFICIENT       = 8,
+
+    /// Underlying authentication service can not retrieve authentication information
+    AUTHINFO_UNAVAIL        = 9,
+
+    /// User not known to the underlying authentication module
+    USER_UNKNOWN            = 10,
+
+    /// An authentication service has maintained a retry count which has been reached.
+    /// No further retries should be attempted
+    MAXTRIES                = 11,
+
+    /// New authentication token required.
+    /// This is normally returned if the machine security policies require
+    /// that the password should be changed beccause the password is NULL or it has aged
+    NEW_AUTHTOK_REQD        = 12,
+
+    /// User account has expired
+    ACCT_EXPIRED            = 13,
+
+    /// Can not make/remove an entry for the specified session
+    SESSION_ERR             = 14,
+
+    /// Underlying authentication service can not retrieve user credentials unavailable
+    CRED_UNAVAIL            = 15,
+
+    /// User credentials expired
+    CRED_EXPIRED            = 16,
+
+    /// Failure setting user credentials
+    CRED_ERR                = 17,
+
+    /// No module specific data is present
+    NO_MODULE_DATA          = 18,
+
+    /// Conversation error
+    CONV_ERR                = 19,
+
+    /// Authentication token manipulation error
+    AUTHTOK_ERR             = 20,
+
+    /// Authentication information cannot be recovered
+    AUTHTOK_RECOVERY_ERR    = 21,
+
+    /// Authentication token lock busy
+    AUTHTOK_LOCK_BUSY       = 22,
+
+    /// Authentication token aging disabled
+    AUTHTOK_DISABLE_AGING   = 23,
+
+    /// Preliminary check by password service
+    TRY_AGAIN               = 24,
+
+    /// Ignore underlying account module regardless of whether
+    /// the control flag is required, optional, or sufficient
+    IGNORE                  = 25,
+
+    /// Critical error (?module fail now request)
+    AUTHTOK_EXPIRED         = 27,
+
+    /// user's authentication token has expired
+    ABORT                   = 26,
+
+    /// module is not known
+    MODULE_UNKNOWN          = 28,
+
+    /// Bad item passed to pam_*_item()
+    BAD_ITEM                = 29,
+
+    /// conversation function is event driven and data is not available yet
+    CONV_AGAIN              = 30,
+
+    /// please call this function again to complete authentication stack.
+    /// Before calling again, verify that conversation is completed
+    INCOMPLETE              = 31
 }
 
 impl PamReturnCode {
@@ -134,63 +219,90 @@ impl PamReturnCode {
     }
 }
 
+/// The Linux-PAM flags
 #[derive(Debug, PartialEq)]
 pub enum PamFlag {
+    /// Authentication service should not generate any messages
     SILENT                  = 0x8000,
 
-    /* Note: these flags are used by pam_authenticate{,_secondary}() */
-
-    /* The authentication service should return AUTH_ERROR if the
-     * user has a null authentication token */
+    /// The authentication service should return AUTH_ERROR
+    /// if the user has a null authentication token
+    /// (used by pam_authenticate{,_secondary}())
     DISALLOW_NULL_AUTHTOK   = 0x0001,
 
-    /* Note: these flags are used for pam_setcred() */
-
-    /* Set user credentials for an authentication service */
+    /// Set user credentials for an authentication service
+    /// (used for pam_setcred())
     ESTABLISH_CRED          = 0x0002,
 
-    /* Delete user credentials associated with an authentication service */
+    /// Delete user credentials associated with an authentication service
+    /// (used for pam_setcred())
     DELETE_CRED             = 0x0004,
 
-    /* Reinitialize user credentials */
+    /// Reinitialize user credentials
+    /// (used for pam_setcred())
     REINITIALIZE_CRED       = 0x0008,
 
-    /* Extend lifetime of user credentials */
+    /// Extend lifetime of user credentials
+    /// (used for pam_setcred())
     REFRESH_CRED            = 0x0010,
 
-    /* Note: these flags are used by pam_chauthtok */
-
-    /* The password service should only update those passwords that have
-     * aged.  If this flag is not passed, the password service should
-     * update all passwords. */
+    /// The password service should only update those passwords that have aged.
+    /// If this flag is not passed, the password service should update all passwords.
+    /// (used by pam_chauthtok)
     CHANGE_EXPIRED_AUTHTOK  = 0x0020,
 
-    NONE                    = 0
+    NONE                    = 0x0000
 }
 
+/// The Linux-PAM item types
+///
+/// These defines are used by pam_set_item() and pam_get_item().
+/// Please check the spec which are allowed for use by applications
+/// and which are only allowed for use by modules.
 #[derive(Debug, PartialEq)]
 pub enum PamItemType {
-    /* These defines are used by pam_set_item() and pam_get_item().
-    Please check the spec which are allowed for use by applications
-    and which are only allowed for use by modules. */
+    /// The service name
+    SERVICE         = 1,
 
-    SERVICE         = 1,    /* The service name */
-    USER            = 2,    /* The user name */
-    TTY             = 3,    /* The tty name */
-    RHOST           = 4,    /* The remote host name */
-    CONV            = 5,    /* The pam_conv structure */
-    AUTHTOK         = 6,    /* The authentication token (password) */
-    OLDAUTHTOK      = 7,    /* The old authentication token */
-    RUSER           = 8,    /* The remote user name */
-    USER_PROMPT     = 9,    /* the prompt for getting a username
-                            Linux-PAM extensions */
-    FAIL_DELAY      = 10,   /* app supplied function to override failure
-                            delays */
-    XDISPLAY        = 11,   /* X display name */
-    XAUTHDATA       = 12,   /* X server authentication data */
-    AUTHTOK_TYPE    = 13    /* The type for pam_get_authtok */
+    /// The user name
+    USER            = 2,
+
+    /// The tty name
+    TTY             = 3,
+
+    /// The remote host name
+    RHOST           = 4,
+
+    /// The pam_conv structure
+    CONV            = 5,
+
+    /// The authentication token (password)
+    AUTHTOK         = 6,
+
+    /// The old authentication token
+    OLDAUTHTOK      = 7,
+
+    /// The remote user name
+    RUSER           = 8,
+
+    /// the prompt for getting a username Linux-PAM extensions
+    USER_PROMPT     = 9,
+
+    /// app supplied function to override failure delays
+    FAIL_DELAY      = 10,
+
+    /// X display name
+    XDISPLAY        = 11,
+
+    /// X server authentication data
+    XAUTHDATA       = 12,
+
+    /// The type for pam_get_authtok
+    AUTHTOK_TYPE    = 13
+
 }
 
+/// The Linux-PAM message styles
 #[derive(Debug, PartialEq)]
 pub enum PamMessageStyle {
     PROMPT_ECHO_OFF = 1,

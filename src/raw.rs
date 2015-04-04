@@ -1,3 +1,13 @@
+//! Raw FFI bindings to Linux-PAM
+//!
+//! This modules contains the raw and unchangeg FFI bindings to libpam.so.
+//! All C-types are mapped to their responding types from `libc` and functions
+//! names are exactly as exported by `libpam.so`
+//!
+//! Note: If possible the wrapped versions of these functions should be preferred,
+//! since they offer some additional typesafety through the use of the enums defined
+//! in the [`types`](../types/index.html) module.
+
 use libc::{c_char, c_int, c_void};
 
 use types::*;

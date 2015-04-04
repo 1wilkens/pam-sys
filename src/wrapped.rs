@@ -1,3 +1,14 @@
+//! Wrapped FFI bindings to Linux-PAM
+//!
+//! This module provides wrapped versions of some of the functions from
+//! the [`raw`](../raw/index.html) module which use the appropriate enums
+//! instead of `c_int`. These wrappers should always be preferred as one
+//! can safely match on their return types and prevent illegal arguments
+//! from beeing passed to the native library.
+//!
+//! Note: These wrappers get added as I need them. Feel free to open an issue
+//! or PR for the ones that you require which haven't been added yet.
+
 use libc::{c_char, c_int, c_void};
 
 use types::*;
