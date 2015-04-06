@@ -22,7 +22,7 @@ pub struct PamHandle;
 /// "Used to pass prompting text, error messages, or other informatory text to the user.
 /// This structure is allocated and freed by the PAM library (or loaded module)."
 #[repr(C)]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct PamMessage {
     pub msg_style:  c_int,
     pub msg:        *const c_char
@@ -37,7 +37,7 @@ pub struct PamMessage {
 /// This structure is allocated by the application program,
 /// and free()'d by the Linux-PAM library (or calling module)."
 #[repr(C)]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct PamResponse {
     pub resp:           *mut c_char,
     /// currently un-used, zero expected
@@ -66,7 +66,7 @@ pub struct PamConversation {
 /// data used by modules to connect to the user's X display.
 /// Note: this structure is intentionally compatible with xcb_auth_info_t."
 #[repr(C)]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct PamXAuthData {
     pub namelen:    c_int,
     pub name:       *mut c_char,
