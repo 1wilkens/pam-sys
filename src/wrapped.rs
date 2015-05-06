@@ -76,3 +76,13 @@ pub unsafe fn set_item(handle: *mut PamHandle, item_type: PamItemType, item: *co
 pub unsafe fn get_item(handle: *const PamHandle, item_type: PamItemType, item: *const *const c_void) -> PamReturnCode {
     PamReturnCode::from_i32(pam_get_item(handle, item_type as i32, item))
 }
+
+#[inline]
+pub unsafe fn putenv(handle: *mut PamHandle, name_value: *const c_char) -> PamReturnCode {
+    PamReturnCode::from_i32(pam_putenv(handle, name_value))
+}
+
+#[inline]
+pub unsafe fn getenv(handle: *mut PamHandle, name: *const c_char) -> *const c_char {
+    pam_getenv(handle, name)
+}
