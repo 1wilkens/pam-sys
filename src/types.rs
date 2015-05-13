@@ -21,6 +21,8 @@
 
 use libc::{c_char, c_int, c_void};
 
+use std::fmt::{Display, Error, Formatter};
+
 /// Opaque struct internal to Linux-PAM
 ///
 /// From `_pam_types.h`:
@@ -39,7 +41,7 @@ pub struct PamHandle;
 /// "Used to pass prompting text, error messages, or other informatory text to the user.
 /// This structure is allocated and freed by the PAM library (or loaded module)."
 #[repr(C)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct PamMessage {
     pub msg_style:  c_int,
     pub msg:        *const c_char
@@ -54,7 +56,7 @@ pub struct PamMessage {
 /// This structure is allocated by the application program,
 /// and free()'d by the Linux-PAM library (or calling module)."
 #[repr(C)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct PamResponse {
     pub resp:           *mut c_char,
     /// currently un-used, zero expected
@@ -83,7 +85,7 @@ pub struct PamConversation {
 /// data used by modules to connect to the user's X display.
 /// Note: this structure is intentionally compatible with xcb_auth_info_t."
 #[repr(C)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct PamXAuthData {
     pub namelen:    c_int,
     pub name:       *mut c_char,
@@ -92,7 +94,7 @@ pub struct PamXAuthData {
 }
 
 /// The Linux-PAM return values
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PamReturnCode {
     /// Successful function return
     SUCCESS                 = 0,
@@ -196,6 +198,12 @@ pub enum PamReturnCode {
     INCOMPLETE              = 31
 }
 
+impl Display for PamReturnCode {
+    fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
+        f.write_str(&format!("{:?} ({})", self, *self as i32))
+    }
+}
+
 impl PamReturnCode {
     pub fn from_i32(status: i32) -> PamReturnCode {
         match status {
@@ -237,7 +245,7 @@ impl PamReturnCode {
 }
 
 /// The Linux-PAM flags
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PamFlag {
     /// Authentication service should not generate any messages
     SILENT                  = 0x8000,
@@ -271,12 +279,18 @@ pub enum PamFlag {
     NONE                    = 0x0000
 }
 
+impl Display for PamFlag {
+    fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
+        f.write_str(&format!("{:?} ({})", self, *self as i32))
+    }
+}
+
 /// The Linux-PAM item types
 ///
 /// These defines are used by pam_set_item() and pam_get_item().
 /// Please check the spec which are allowed for use by applications
 /// and which are only allowed for use by modules.
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PamItemType {
     /// The service name
     SERVICE         = 1,
@@ -316,16 +330,27 @@ pub enum PamItemType {
 
     /// The type for pam_get_authtok
     AUTHTOK_TYPE    = 13
+}
 
+impl Display for PamItemType {
+    fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
+        f.write_str(&format!("{:?} ({})", self, *self as i32))
+    }
 }
 
 /// The Linux-PAM message styles
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PamMessageStyle {
     PROMPT_ECHO_OFF = 1,
     PROMPT_ECHO_ON  = 2,
     ERROR_MSG       = 3,
     TEXT_INFO       = 4
+}
+
+impl Display for PamMessageStyle {
+    fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
+        f.write_str(&format!("{:?} ({})", self, *self as i32))
+    }
 }
 
 impl PamMessageStyle {
