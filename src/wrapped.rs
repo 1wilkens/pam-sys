@@ -31,58 +31,90 @@ use libc::{c_char, c_int, c_void};
 use types::*;
 use raw::*;
 
+/* ------------------------ pam_appl.h -------------------------- */
 #[inline]
 pub unsafe fn start(service: *const c_char, user: *const c_char,
     conversation: *const PamConversation, handle: *mut *mut PamHandle) -> PamReturnCode {
-    PamReturnCode::from_i32(pam_start(service, user, conversation, handle as *mut *const PamHandle))
+    PamReturnCode::from(pam_start(service, user, conversation, handle as *mut *const PamHandle))
 }
 
 #[inline]
 pub unsafe fn end(handle: *mut PamHandle, status: c_int) -> PamReturnCode {
-    PamReturnCode::from_i32(pam_end(handle, status))
+    PamReturnCode::from(pam_end(handle, status))
 }
 
 #[inline]
 pub unsafe fn authenticate(handle: *mut PamHandle, flags: PamFlag) -> PamReturnCode {
-    PamReturnCode::from_i32(pam_authenticate(handle, flags as i32))
-}
-
-#[inline]
-pub unsafe fn acct_mgmt(handle: *mut PamHandle, flags: PamFlag) -> PamReturnCode {
-    PamReturnCode::from_i32(pam_acct_mgmt(handle, flags as i32))
+    PamReturnCode::from(pam_authenticate(handle, flags as c_int))
 }
 
 #[inline]
 pub unsafe fn setcred(handle: *mut PamHandle, flags: PamFlag) -> PamReturnCode {
-    PamReturnCode::from_i32(pam_setcred(handle, flags as i32))
+    PamReturnCode::from(pam_setcred(handle, flags as c_int))
+}
+
+#[inline]
+pub unsafe fn acct_mgmt(handle: *mut PamHandle, flags: PamFlag) -> PamReturnCode {
+    PamReturnCode::from(pam_acct_mgmt(handle, flags as c_int))
 }
 
 #[inline]
 pub unsafe fn open_session(handle: *mut PamHandle, flags: PamFlag) -> PamReturnCode {
-    PamReturnCode::from_i32(pam_open_session(handle, flags as i32))
+    PamReturnCode::from(pam_open_session(handle, flags as c_int))
 }
 
 #[inline]
 pub unsafe fn close_session(handle: *mut PamHandle, flags: PamFlag) -> PamReturnCode {
-    PamReturnCode::from_i32(pam_close_session(handle, flags as i32))
+    PamReturnCode::from(pam_close_session(handle, flags as c_int))
 }
 
 #[inline]
+pub unsafe fn chauthtok(handle: *mut PamHandle, flags: PamFlag) -> PamReturnCode {
+    PamReturnCode::from(pam_chauthtok(handle, flags as c_int))
+}
+/* ------------------------ pam_appl.h -------------------------- */
+
+/* ----------------------- _pam_types.h ------------------------- */
+#[inline]
 pub unsafe fn set_item(handle: *mut PamHandle, item_type: PamItemType, item: *const c_void) -> PamReturnCode {
-    PamReturnCode::from_i32(pam_set_item(handle, item_type as i32, item))
+    PamReturnCode::from(pam_set_item(handle, item_type as c_int, item))
 }
 
 #[inline]
 pub unsafe fn get_item(handle: *const PamHandle, item_type: PamItemType, item: *const *const c_void) -> PamReturnCode {
-    PamReturnCode::from_i32(pam_get_item(handle, item_type as i32, item))
+    PamReturnCode::from(pam_get_item(handle, item_type as c_int, item))
+}
+
+//TODO: All these functions returning *const c_chars are kind of redundant but are here for convenience
+#[inline]
+pub unsafe fn strerror(handle: *mut PamHandle, errnum: PamReturnCode) -> *const c_char {
+    pam_strerror(handle, errnum as c_int)
 }
 
 #[inline]
 pub unsafe fn putenv(handle: *mut PamHandle, name_value: *const c_char) -> PamReturnCode {
-    PamReturnCode::from_i32(pam_putenv(handle, name_value))
+    PamReturnCode::from(pam_putenv(handle, name_value))
 }
 
 #[inline]
 pub unsafe fn getenv(handle: *mut PamHandle, name: *const c_char) -> *const c_char {
     pam_getenv(handle, name)
 }
+
+#[inline]
+pub unsafe fn getenvlist(handle: *mut PamHandle) -> *const *const c_char {
+    pam_getenvlist(handle)
+}
+/* ----------------------- _pam_types.h ------------------------- */
+
+/* ----------------------- pam_modules.h ------------------------ */
+#[inline]
+pub unsafe fn set_data(handle: *mut PamHandle, module_data_name: *const c_char, data: *mut c_void,
+    cleanup: Option<extern "C" fn (*mut PamHandle, *mut c_void, c_int)>) -> PamReturnCode {
+    PamReturnCode::from(pam_set_data(handle, module_data_name, data, cleanup))
+}
+
+//pub fn get_data(pamh: *const PamHandle, module_data_name: *const c_char, data: *const *const c_void);
+//
+//pub fn get_user(pamh: *mut PamHandle, user: *const *const c_char, prompt: *const c_char);
+/* ----------------------- pam_modules.h ------------------------ */

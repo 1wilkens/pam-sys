@@ -72,12 +72,11 @@ extern "C" {
     /* ----------------------- pam_modules.h ------------------------ */
     /* -------------------- The Linux-PAM Module PI ----------------- */
 
-    /*pub fn pam_set_data(pamh: *mut PamHandle, module_data_name: *const c_char,
-        data: *mut c_void, cleanup: extern fn()  void (*cleanup)(pamh: *mut PamHandle, void *data,
-    			     int error_status));*/
+    pub fn pam_set_data(pamh: *mut PamHandle, module_data_name: *const c_char, data: *mut c_void,
+        cleanup: Option<extern "C" fn (*mut PamHandle, *mut c_void, c_int)>) -> c_int;
 
-    pub fn pam_get_data(pamh: *const PamHandle, module_data_name: *const c_char, data: *const *const c_void);
+    pub fn pam_get_data(pamh: *const PamHandle, module_data_name: *const c_char, data: *const *const c_void) -> c_int;
 
-    pub fn pam_get_user(pamh: *mut PamHandle, user: *const *const c_char, prompt: *const c_char);
+    pub fn pam_get_user(pamh: *mut PamHandle, user: *const *const c_char, prompt: *const c_char) -> c_int;
     /* ----------------------- pam_modules.h ------------------------ */
 }

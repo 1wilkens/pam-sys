@@ -204,8 +204,8 @@ impl Display for PamReturnCode {
     }
 }
 
-impl PamReturnCode {
-    pub fn from_i32(status: i32) -> PamReturnCode {
+impl From<i32> for PamReturnCode {
+    fn from(status: i32) -> PamReturnCode {
         match status {
             0   => PamReturnCode::SUCCESS               ,
             1   => PamReturnCode::OPEN_ERR              ,
@@ -353,8 +353,8 @@ impl Display for PamMessageStyle {
     }
 }
 
-impl PamMessageStyle {
-    pub fn from_i32(style: i32) -> PamMessageStyle {
+impl From<i32> for PamMessageStyle {
+    fn from(style: i32) -> PamMessageStyle {
         match style {
             1 => PamMessageStyle::PROMPT_ECHO_OFF,
             2 => PamMessageStyle::PROMPT_ECHO_ON,
