@@ -39,8 +39,8 @@ pub unsafe fn start(service: *const c_char, user: *const c_char,
 }
 
 #[inline]
-pub unsafe fn end(handle: *mut PamHandle, status: c_int) -> PamReturnCode {
-    PamReturnCode::from(pam_end(handle, status))
+pub unsafe fn end(handle: *mut PamHandle, status: PamReturnCode) -> PamReturnCode {
+    PamReturnCode::from(pam_end(handle, status as c_int))
 }
 
 #[inline]
