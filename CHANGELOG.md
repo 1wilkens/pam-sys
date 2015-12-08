@@ -12,7 +12,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## [Unreleased]
-- Better travis-ci integration (test on stable, beta and nightly)
+### Added
+- Better travis-ci integration
+    - Test on stable, beta and nightly
+    - Use containers for faster builds
 
 ## [0.3.0] - 2015-12-08
 ### Added
