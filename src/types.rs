@@ -31,8 +31,7 @@ use std::fmt::{Display, Error, Formatter};
 /// inside a pam_handle_t, so we don't define struct pam_handle here.
 /// This is defined in a file private to the PAM library.
 /// (i.e., it's private to PAM service modules, too!)"
-#[repr(C)]
-pub struct PamHandle;
+pub enum PamHandle {}
 
 /// Message struct to transfer authentication data to the user
 ///

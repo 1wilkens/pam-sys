@@ -109,7 +109,10 @@ pub unsafe fn getenvlist(handle: *mut PamHandle) -> *const *const c_char {
 
 /* ----------------------- pam_modules.h ------------------------ */
 #[inline]
-pub unsafe fn set_data(handle: *mut PamHandle, module_data_name: *const c_char, data: *mut c_void,
+pub unsafe fn set_data(
+    handle: *mut PamHandle,
+    module_data_name: *const c_char,
+    data: *mut c_void,
     cleanup: Option<extern "C" fn (*mut PamHandle, *mut c_void, c_int)>) -> PamReturnCode {
     PamReturnCode::from(pam_set_data(handle, module_data_name, data, cleanup))
 }
