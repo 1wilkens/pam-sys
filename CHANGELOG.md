@@ -14,8 +14,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - Better travis-ci integration
-    - Test on stable, beta and nightly
+    - Test on 1.4.0-1.6.0, stable, beta and nightly
     - Use containers for faster builds
+
+### Changed
+- Updated `libc` dependency (0.2.2 -> 0.2.9)
+- Changed wrapped/{strerror, getenv} to return `Option<&'static str>` instead of `*const c_char`
 
 ## [0.3.0] - 2015-12-08
 ### Added

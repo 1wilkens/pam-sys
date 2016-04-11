@@ -2,3 +2,5 @@
 Rust FFI wrappers for the Linux Pluggable Authentication Modules (PAM).
 
 [Documentation @ gh-pages](https://mrfloya.github.io/pam-sys/)
+
+Currently builds on Rust 1.4.0 stable and above.

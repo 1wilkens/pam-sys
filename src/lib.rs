@@ -29,6 +29,6 @@ pub use types::*;
 pub use wrapped::*;
 
 pub mod raw;
-#[allow(non_camel_case_types, raw_pointer_derive)]
+#[allow(non_camel_case_types)]
 pub mod types;
 pub mod wrapped;

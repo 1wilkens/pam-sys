@@ -27,6 +27,7 @@
 //! or PR for the ones that you require which haven't been added yet.
 
 use libc::{c_char, c_int, c_void};
+use std::ffi::CStr;
 
 use types::*;
 use raw::*;
@@ -85,10 +86,9 @@ pub unsafe fn get_item(handle: *const PamHandle, item_type: PamItemType, item: *
     PamReturnCode::from(pam_get_item(handle, item_type as c_int, item))
 }
 
-//TODO: All these functions returning *const c_chars are kind of redundant but are here for convenience
 #[inline]
-pub unsafe fn strerror(handle: *mut PamHandle, errnum: PamReturnCode) -> *const c_char {
-    pam_strerror(handle, errnum as c_int)
+pub unsafe fn strerror(handle: *mut PamHandle, errnum: PamReturnCode) -> Option<&'static str> {
+    CStr::from_ptr(pam_strerror(handle, errnum as c_int)).to_str().ok()
 }
 
 #[inline]
@@ -97,12 +97,13 @@ pub unsafe fn putenv(handle: *mut PamHandle, name_value: *const c_char) -> PamRe
 }
 
 #[inline]
-pub unsafe fn getenv(handle: *mut PamHandle, name: *const c_char) -> *const c_char {
-    pam_getenv(handle, name)
+pub unsafe fn getenv(handle: *mut PamHandle, name: *const c_char) -> Option<&'static str> {
+    CStr::from_ptr(pam_getenv(handle, name)).to_str().ok()
 }
 
 #[inline]
 pub unsafe fn getenvlist(handle: *mut PamHandle) -> *const *const c_char {
+    //TODO: find a convenient way to handle this with Rust types
     pam_getenvlist(handle)
 }
 /* ----------------------- _pam_types.h ------------------------- */
@@ -113,7 +114,8 @@ pub unsafe fn set_data(
     handle: *mut PamHandle,
     module_data_name: *const c_char,
     data: *mut c_void,
-    cleanup: Option<extern "C" fn (*mut PamHandle, *mut c_void, c_int)>) -> PamReturnCode {
+    cleanup: Option<extern "C" fn (*mut PamHandle, *mut c_void, c_int)>)
+    -> PamReturnCode {
     PamReturnCode::from(pam_set_data(handle, module_data_name, data, cleanup))
 }
 

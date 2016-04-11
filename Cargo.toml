@@ -13,7 +13,7 @@ build = "build.rs"
 links = "pam"
 
 [dependencies]
-libc = "0.2.2"
+libc = "0.2.9"
 
 [build-dependencies]
 pkg-config = "0.3.5"
