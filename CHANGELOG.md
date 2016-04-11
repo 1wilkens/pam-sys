@@ -32,5 +32,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - PamHandle from empty struct to zero variant enum (as recommended in [the Rust Book](https://doc.rust-lang.org/nightly/book/ffi.html#representing-opaque-structs))
 
 
-[Unreleased]: https://github.com/mrfloya/pam-sys/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/mrfloya/pam-sys/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/mrfloya/pam-sys/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/mrfloya/pam-sys/compare/f051f14b76ad1e06be1832604e0ca570743460ac...v0.3.0
