@@ -17,6 +17,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - Updated `libc` dependency (0.2.9 -> 0.2.18)
+- Moved documentation to [docs.rs](https://docs.rs/pam-sys/)
 
 ### Removed
 - Removed obsolete dependencies (`gcc` & `pkg-config`)
