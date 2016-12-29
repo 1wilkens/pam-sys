@@ -17,7 +17,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - Updated `libc` dependency (0.2.9 -> 0.2.18)
+
+### Removed
 - Removed obsolete dependencies (`gcc` & `pkg-config`)
+- Removed `.travis-update-gh-pages.sh` and obsolete rust versions from `.travis.yml`
 
 ## [0.4.1] - 2016-04-11
 ### Changed
