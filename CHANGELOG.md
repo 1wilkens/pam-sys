@@ -15,6 +15,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Added license badge to README.md
 
+### Changed
+- Updated `libc` dependency (0.2.9 -> 0.2.18)
+- Removed obsolete dependencies (`gcc` & `pkg-config`)
+
 ## [0.4.1] - 2016-04-11
 ### Changed
 - Relicense under MIT/Apache-2.0
