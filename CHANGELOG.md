@@ -12,11 +12,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## [Unreleased]
+
+## [0.4.3] - 2016-01-20
 ### Added
 - Added license badge to README.md
 
 ### Changed
-- Updated `libc` dependency (0.2.9 -> 0.2.18)
+- Updated `libc` dependency (0.2.9 -> 0.2.20)
 - Moved documentation to [docs.rs](https://docs.rs/pam-sys/)
 
 ### Removed
@@ -46,7 +48,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - PamHandle from empty struct to zero variant enum (as recommended in [the Rust Book](https://doc.rust-lang.org/nightly/book/ffi.html#representing-opaque-structs))
 
 
-[Unreleased]: https://github.com/1wilkens/pam-sys/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/1wilkens/pam-sys/compare/v0.4.3...HEAD
+[0.4.3]: https://github.com/1wilkens/pam-sys/compare/v0.4.1...v0.4.3
 [0.4.1]: https://github.com/1wilkens/pam-sys/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/1wilkens/pam-sys/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/1wilkens/pam-sys/compare/f051f14b76ad1e06be1832604e0ca570743460ac...v0.3.0
