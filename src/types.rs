@@ -23,12 +23,14 @@ use libc::{c_char, c_int, c_void};
 
 use std::fmt::{Display, Error, Formatter};
 
+type ConvClosure = (extern "C" fn (c_int, *mut *mut PamMessage, *mut *mut PamResponse, *mut c_void) -> c_int);
+
 /// Opaque struct internal to Linux-PAM
 ///
 /// From `_pam_types.h`:
 ///
 /// "This is a blind structure. Users aren't allowed to see
-/// inside a pam_handle_t, so we don't define struct pam_handle here.
+/// inside a `pam_handle_t`, so we don't define struct `pam_handle` here.
 /// This is defined in a file private to the PAM library.
 /// (i.e., it's private to PAM service modules, too!)"
 pub enum PamHandle {}
@@ -71,18 +73,18 @@ pub struct PamResponse {
 pub struct PamConversation {
     /* int (*conv)(int num_msg, const struct pam_message **msg,
 		struct pam_response **resp, void *appdata_ptr); */
-    pub conv:       Option<extern "C" fn (c_int, *mut *mut PamMessage, *mut *mut PamResponse, *mut c_void) -> c_int>,
+    pub conv:       Option<ConvClosure>,
     //pub conv:       *const c_void,
     pub data_ptr:   *mut c_void
 }
 
-/// Special struct for the PAM_XAUTHDATA pam item
+/// Special struct for the `PAM_XAUTHDATA` pam item
 ///
 /// From `_pam_types.h`:
 ///
-/// "Used by the PAM_XAUTHDATA pam item. Contains X authentication
+/// "Used by the `PAM_XAUTHDATA` pam item. Contains X authentication
 /// data used by modules to connect to the user's X display.
-/// Note: this structure is intentionally compatible with xcb_auth_info_t."
+/// Note: this structure is intentionally compatible with `xcb_auth_info_t`."
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct PamXAuthData {
@@ -286,7 +288,7 @@ impl Display for PamFlag {
 
 /// The Linux-PAM item types
 ///
-/// These defines are used by pam_set_item() and pam_get_item().
+/// These defines are used by `pam_set_item()` `and pam_get_item()`.
 /// Please check the spec which are allowed for use by applications
 /// and which are only allowed for use by modules.
 #[derive(Clone, Copy, Debug, PartialEq)]

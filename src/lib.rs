@@ -29,6 +29,6 @@ pub use types::*;
 pub use wrapped::*;
 
 pub mod raw;
-#[allow(non_camel_case_types)]
+#[allow(non_camel_case_types, match_same_arms)]
 pub mod types;
 pub mod wrapped;
