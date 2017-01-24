@@ -23,6 +23,7 @@ use libc::{c_char, c_int, c_void};
 
 use std::fmt::{Display, Error, Formatter};
 
+/// Type alias for the PAM "conversation function" used as part of the `PamConversation` struct
 type ConvClosure = (extern "C" fn (c_int, *mut *mut PamMessage, *mut *mut PamResponse, *mut c_void) -> c_int);
 
 /// Opaque struct internal to Linux-PAM
@@ -74,7 +75,6 @@ pub struct PamConversation {
     /* int (*conv)(int num_msg, const struct pam_message **msg,
 		struct pam_response **resp, void *appdata_ptr); */
     pub conv:       Option<ConvClosure>,
-    //pub conv:       *const c_void,
     pub data_ptr:   *mut c_void
 }
 
