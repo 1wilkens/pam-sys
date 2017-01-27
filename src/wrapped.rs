@@ -34,8 +34,11 @@ use raw::*;
 
 /* ------------------------ pam_appl.h -------------------------- */
 #[inline]
-pub unsafe fn start(service: *const c_char, user: *const c_char,
-    conversation: *const PamConversation, handle: *mut *mut PamHandle) -> PamReturnCode {
+pub unsafe fn start(service: *const c_char,
+                    user: *const c_char,
+                    conversation: *const PamConversation,
+                    handle: *mut *mut PamHandle)
+                    -> PamReturnCode {
     PamReturnCode::from(pam_start(service, user, conversation, handle as *mut *const PamHandle))
 }
 
@@ -77,12 +80,18 @@ pub unsafe fn chauthtok(handle: *mut PamHandle, flags: PamFlag) -> PamReturnCode
 
 /* ----------------------- _pam_types.h ------------------------- */
 #[inline]
-pub unsafe fn set_item(handle: *mut PamHandle, item_type: PamItemType, item: *const c_void) -> PamReturnCode {
+pub unsafe fn set_item(handle: *mut PamHandle,
+                       item_type: PamItemType,
+                       item: *const c_void)
+                       -> PamReturnCode {
     PamReturnCode::from(pam_set_item(handle, item_type as c_int, item))
 }
 
 #[inline]
-pub unsafe fn get_item(handle: *const PamHandle, item_type: PamItemType, item: *const *const c_void) -> PamReturnCode {
+pub unsafe fn get_item(handle: *const PamHandle,
+                       item_type: PamItemType,
+                       item: *const *const c_void)
+                       -> PamReturnCode {
     PamReturnCode::from(pam_get_item(handle, item_type as c_int, item))
 }
 
@@ -110,12 +119,11 @@ pub unsafe fn getenvlist(handle: *mut PamHandle) -> *const *const c_char {
 
 /* ----------------------- pam_modules.h ------------------------ */
 #[inline]
-pub unsafe fn set_data(
-    handle: *mut PamHandle,
-    module_data_name: *const c_char,
-    data: *mut c_void,
-    cleanup: Option<extern "C" fn (*mut PamHandle, *mut c_void, c_int)>)
-    -> PamReturnCode {
+pub unsafe fn set_data(handle: *mut PamHandle,
+                       module_data_name: *const c_char,
+                       data: *mut c_void,
+                       cleanup: Option<extern "C" fn(*mut PamHandle, *mut c_void, c_int)>)
+                       -> PamReturnCode {
     PamReturnCode::from(pam_set_data(handle, module_data_name, data, cleanup))
 }
 

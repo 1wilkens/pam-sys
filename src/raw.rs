@@ -32,8 +32,11 @@ use types::*;
 extern "C" {
     /* ------------------------ pam_appl.h -------------------------- */
     /* -------------- The Linux-PAM Framework layer API ------------- */
-    pub fn pam_start(service_name: *const c_char, user: *const c_char,
-        pam_conversation: *const PamConversation, pamh: *mut *const PamHandle) -> c_int;
+    pub fn pam_start(service_name: *const c_char,
+                     user: *const c_char,
+                     pam_conversation: *const PamConversation,
+                     pamh: *mut *const PamHandle)
+                     -> c_int;
 
     pub fn pam_end(pamh: *mut PamHandle, pam_status: c_int) -> c_int;
 
@@ -58,7 +61,10 @@ extern "C" {
     /* ---------- Common Linux-PAM application/module PI ------------ */
     pub fn pam_set_item(pamh: *mut PamHandle, item_type: c_int, item: *const c_void) -> c_int;
 
-    pub fn pam_get_item(pamh: *const PamHandle, item_type: c_int, item: *const *const c_void) -> c_int;
+    pub fn pam_get_item(pamh: *const PamHandle,
+                        item_type: c_int,
+                        item: *const *const c_void)
+                        -> c_int;
 
     pub fn pam_strerror(pamh: *mut PamHandle, errnum: c_int) -> *const c_char;
 
@@ -72,11 +78,20 @@ extern "C" {
     /* ----------------------- pam_modules.h ------------------------ */
     /* -------------------- The Linux-PAM Module PI ----------------- */
 
-    pub fn pam_set_data(pamh: *mut PamHandle, module_data_name: *const c_char, data: *mut c_void,
-        cleanup: Option<extern "C" fn (*mut PamHandle, *mut c_void, c_int)>) -> c_int;
+    pub fn pam_set_data(pamh: *mut PamHandle,
+                        module_data_name: *const c_char,
+                        data: *mut c_void,
+                        cleanup: Option<extern "C" fn(*mut PamHandle, *mut c_void, c_int)>)
+                        -> c_int;
 
-    pub fn pam_get_data(pamh: *const PamHandle, module_data_name: *const c_char, data: *const *const c_void) -> c_int;
+    pub fn pam_get_data(pamh: *const PamHandle,
+                        module_data_name: *const c_char,
+                        data: *const *const c_void)
+                        -> c_int;
 
-    pub fn pam_get_user(pamh: *mut PamHandle, user: *const *const c_char, prompt: *const c_char) -> c_int;
+    pub fn pam_get_user(pamh: *mut PamHandle,
+                        user: *const *const c_char,
+                        prompt: *const c_char)
+                        -> c_int;
     /* ----------------------- pam_modules.h ------------------------ */
 }
