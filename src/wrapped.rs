@@ -39,42 +39,42 @@ pub unsafe fn start(service: *const c_char,
                     conversation: *const PamConversation,
                     handle: *mut *mut PamHandle)
                     -> PamReturnCode {
-    PamReturnCode::from(pam_start(service, user, conversation, handle as *mut *const PamHandle))
+    From::from(pam_start(service, user, conversation, handle as *mut *const PamHandle))
 }
 
 #[inline]
 pub unsafe fn end(handle: *mut PamHandle, status: PamReturnCode) -> PamReturnCode {
-    PamReturnCode::from(pam_end(handle, status as c_int))
+    From::from(pam_end(handle, status as c_int))
 }
 
 #[inline]
 pub unsafe fn authenticate(handle: *mut PamHandle, flags: PamFlag) -> PamReturnCode {
-    PamReturnCode::from(pam_authenticate(handle, flags as c_int))
+    From::from(pam_authenticate(handle, flags as c_int))
 }
 
 #[inline]
 pub unsafe fn setcred(handle: *mut PamHandle, flags: PamFlag) -> PamReturnCode {
-    PamReturnCode::from(pam_setcred(handle, flags as c_int))
+    From::from(pam_setcred(handle, flags as c_int))
 }
 
 #[inline]
 pub unsafe fn acct_mgmt(handle: *mut PamHandle, flags: PamFlag) -> PamReturnCode {
-    PamReturnCode::from(pam_acct_mgmt(handle, flags as c_int))
+    From::from(pam_acct_mgmt(handle, flags as c_int))
 }
 
 #[inline]
 pub unsafe fn open_session(handle: *mut PamHandle, flags: PamFlag) -> PamReturnCode {
-    PamReturnCode::from(pam_open_session(handle, flags as c_int))
+    From::from(pam_open_session(handle, flags as c_int))
 }
 
 #[inline]
 pub unsafe fn close_session(handle: *mut PamHandle, flags: PamFlag) -> PamReturnCode {
-    PamReturnCode::from(pam_close_session(handle, flags as c_int))
+    From::from(pam_close_session(handle, flags as c_int))
 }
 
 #[inline]
 pub unsafe fn chauthtok(handle: *mut PamHandle, flags: PamFlag) -> PamReturnCode {
-    PamReturnCode::from(pam_chauthtok(handle, flags as c_int))
+    From::from(pam_chauthtok(handle, flags as c_int))
 }
 /* ------------------------ pam_appl.h -------------------------- */
 
@@ -84,38 +84,58 @@ pub unsafe fn set_item(handle: *mut PamHandle,
                        item_type: PamItemType,
                        item: *const c_void)
                        -> PamReturnCode {
-    PamReturnCode::from(pam_set_item(handle, item_type as c_int, item))
+    From::from(pam_set_item(handle, item_type as c_int, item))
 }
 
 #[inline]
 pub unsafe fn get_item(handle: *const PamHandle,
                        item_type: PamItemType,
-                       item: *const *const c_void)
+                       item: *mut *const c_void)
                        -> PamReturnCode {
-    PamReturnCode::from(pam_get_item(handle, item_type as c_int, item))
+    From::from(pam_get_item(handle, item_type as c_int, item))
 }
 
 #[inline]
-pub unsafe fn strerror(handle: *mut PamHandle, errnum: PamReturnCode) -> Option<&'static str> {
+pub unsafe fn strerror<'a>(handle: &'a mut PamHandle, errnum: PamReturnCode) -> Option<&'a str> {
     CStr::from_ptr(pam_strerror(handle, errnum as c_int)).to_str().ok()
 }
 
 #[inline]
 pub unsafe fn putenv(handle: *mut PamHandle, name_value: *const c_char) -> PamReturnCode {
-    PamReturnCode::from(pam_putenv(handle, name_value))
+    From::from(pam_putenv(handle, name_value))
 }
 
 #[inline]
-pub unsafe fn getenv(handle: *mut PamHandle, name: *const c_char) -> Option<&'static str> {
+pub unsafe fn getenv<'a>(handle: &'a mut PamHandle, name: *const c_char) -> Option<&'a str> {
     CStr::from_ptr(pam_getenv(handle, name)).to_str().ok()
 }
 
 #[inline]
-pub unsafe fn getenvlist(handle: *mut PamHandle) -> *const *const c_char {
+pub unsafe fn getenvlist(handle: *mut PamHandle) -> *mut *mut c_char {
     //TODO: find a convenient way to handle this with Rust types
     pam_getenvlist(handle)
 }
 /* ----------------------- _pam_types.h ------------------------- */
+
+/* ----------------------- pam_misc.h --------------------------- */
+pub unsafe fn misc_paste_env(handle: *mut PamHandle,
+                             user_env: *const *const c_char)
+                             -> PamReturnCode {
+    From::from(pam_misc_paste_env(handle, user_env))
+}
+
+pub unsafe fn misc_drop_env(env: *mut *mut c_char) -> *mut *mut c_char {
+    pam_misc_drop_env(env)
+}
+
+pub unsafe fn misc_setenv(handle: *mut PamHandle,
+                          name: *const c_char,
+                          value: *const c_char,
+                          readonly: c_int)
+                          -> PamReturnCode {
+    From::from(pam_misc_setenv(handle, name, value, readonly))
+}
+/* ----------------------- pam_misc.h --------------------------- */
 
 /* ----------------------- pam_modules.h ------------------------ */
 #[inline]
@@ -124,10 +144,10 @@ pub unsafe fn set_data(handle: *mut PamHandle,
                        data: *mut c_void,
                        cleanup: Option<extern "C" fn(*mut PamHandle, *mut c_void, c_int)>)
                        -> PamReturnCode {
-    PamReturnCode::from(pam_set_data(handle, module_data_name, data, cleanup))
+    From::from(pam_set_data(handle, module_data_name, data, cleanup))
 }
 
-//pub fn get_data(pamh: *const PamHandle, module_data_name: *const c_char, data: *const *const c_void);
+//pub fn get_data(handle: *const PamHandle, module_data_name: *const c_char, data: *const *const c_void);
 //
 //pub fn get_user(pamh: *mut PamHandle, user: *const *const c_char, prompt: *const c_char);
 /* ----------------------- pam_modules.h ------------------------ */

@@ -63,7 +63,7 @@ extern "C" {
 
     pub fn pam_get_item(pamh: *const PamHandle,
                         item_type: c_int,
-                        item: *const *const c_void)
+                        item: *mut *const c_void)
                         -> c_int;
 
     pub fn pam_strerror(pamh: *mut PamHandle, errnum: c_int) -> *const c_char;
@@ -72,8 +72,22 @@ extern "C" {
 
     pub fn pam_getenv(pamh: *mut PamHandle, name: *const c_char) -> *const c_char;
 
-    pub fn pam_getenvlist(pamh: *mut PamHandle) -> *const *const c_char;
+    pub fn pam_getenvlist(pamh: *mut PamHandle) -> *mut *mut c_char;
     /* ----------------------- _pam_types.h ------------------------- */
+
+    /* ----------------------- pam_misc.h --------------------------- */
+    pub fn pam_misc_paste_env(pamh: *mut PamHandle,
+                              user_env: *const *const c_char)
+                              -> c_int;
+
+    pub fn pam_misc_drop_env(env: *mut *mut c_char) -> *mut *mut c_char;
+
+    pub fn pam_misc_setenv(pamh: *mut PamHandle,
+                           name: *const c_char,
+                           value: *const c_char,
+                           readonly: c_int)
+                           -> c_int;
+    /* ----------------------- pam_misc.h --------------------------- */
 
     /* ----------------------- pam_modules.h ------------------------ */
     /* -------------------- The Linux-PAM Module PI ----------------- */
@@ -86,11 +100,11 @@ extern "C" {
 
     pub fn pam_get_data(pamh: *const PamHandle,
                         module_data_name: *const c_char,
-                        data: *const *const c_void)
+                        data: *mut *const c_void)
                         -> c_int;
 
     pub fn pam_get_user(pamh: *mut PamHandle,
-                        user: *const *const c_char,
+                        user: *mut *const c_char,
                         prompt: *const c_char)
                         -> c_int;
     /* ----------------------- pam_modules.h ------------------------ */

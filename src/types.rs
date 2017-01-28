@@ -22,6 +22,7 @@
 use libc::{c_char, c_int, c_void};
 
 use std::fmt::{Display, Error, Formatter};
+use std::ops::Deref;
 
 /// Type alias for the PAM "conversation function" used as part of the `PamConversation` struct
 type ConvClosure = (extern "C" fn(c_int,
