@@ -12,10 +12,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## [Unreleased]
+### Added
+- Added travis-ci badge to `Cargo.toml`
 
 ## [0.4.3] - 2016-01-20
 ### Added
-- Added license badge to README.md
+- Added license badge to `README.md`
 
 ### Changed
 - Updated `libc` dependency (0.2.9 -> 0.2.20)

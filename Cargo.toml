@@ -12,5 +12,8 @@ license = "MIT OR Apache-2.0"
 build = "build.rs"
 links = "pam"
 
+[badges]
+travis-ci = { repository = "1wilkens/pam-sys" }
+
 [dependencies]
 libc = "0.2.20"
