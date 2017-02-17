@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## [Unreleased]
+
+## [0.5.0] - 2017-02-17
 ### Added
 - Added travis-ci badge to `Cargo.toml`
 - Added categories to `Cargo.toml`
@@ -23,7 +25,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Fixed `raw::pam_misc_dropenv` and `wrapped::misc_dropenv`'s return type
 
-## [0.4.3] - 2016-01-20
+## [0.4.3] - 2017-01-20
 ### Added
 - Added license badge to `README.md`
 
@@ -58,7 +60,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - PamHandle from empty struct to zero variant enum (as recommended in [the Rust Book](https://doc.rust-lang.org/nightly/book/ffi.html#representing-opaque-structs))
 
 
-[Unreleased]: https://github.com/1wilkens/pam-sys/compare/v0.4.3...HEAD
+[Unreleased]: https://github.com/1wilkens/pam-sys/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/1wilkens/pam-sys/compare/v0.4.3...v0.5.0
 [0.4.3]: https://github.com/1wilkens/pam-sys/compare/v0.4.1...v0.4.3
 [0.4.1]: https://github.com/1wilkens/pam-sys/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/1wilkens/pam-sys/compare/v0.3.0...v0.4.0
