@@ -18,6 +18,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Changed `raw::pam_getenvlist`'s return type back to `*const *const c_char`
 
+### Fixed
+- Fixed `raw::pam_misc_dropenv` and `wrapped::misc_dropenv`'s return type
+
 ## [0.4.3] - 2016-01-20
 ### Added
 - Added license badge to `README.md`

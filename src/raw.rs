@@ -80,7 +80,7 @@ extern "C" {
                               user_env: *const *const c_char)
                               -> c_int;
 
-    pub fn pam_misc_drop_env(env: *mut *mut c_char) -> *mut *mut c_char;
+    pub fn pam_misc_drop_env(env: *mut *mut c_char) -> c_int;
 
     pub fn pam_misc_setenv(pamh: *mut PamHandle,
                            name: *const c_char,

@@ -27,19 +27,27 @@
 //! or PR for the ones that you require which haven't been added yet.
 
 use libc::{c_char, c_int, c_void};
-use std::ffi::CStr;
+use std::ffi::{CStr, CString};
+use std::ptr::null;
 
 use types::*;
 use raw::*;
 
 /* ------------------------ pam_appl.h -------------------------- */
 #[inline]
-pub unsafe fn start(service: *const c_char,
-                    user: *const c_char,
+pub unsafe fn start(service: &str,
+                    user: Option<&str>,
                     conversation: *const PamConversation,
                     handle: *mut *mut PamHandle)
                     -> PamReturnCode {
-    From::from(pam_start(service, user, conversation, handle as *mut *const PamHandle))
+    let service = CString::new(service).unwrap();
+    if let Some(usr) = user {
+        let user = CString::new(usr).unwrap();
+        From::from(pam_start(service.as_ptr(), user.as_ptr(), conversation, handle as *mut *const PamHandle))
+    }
+    else {
+        From::from(pam_start(service.as_ptr(), null(), conversation, handle as *mut *const PamHandle))
+    }
 }
 
 #[inline]
@@ -96,7 +104,7 @@ pub unsafe fn get_item(handle: *const PamHandle,
 }
 
 #[inline]
-pub unsafe fn strerror<'a>(handle: &'a mut PamHandle, errnum: PamReturnCode) -> Option<&'a str> {
+pub unsafe fn strerror(handle: &mut PamHandle, errnum: PamReturnCode) -> Option<&str> {
     CStr::from_ptr(pam_strerror(handle, errnum as c_int)).to_str().ok()
 }
 
@@ -106,34 +114,37 @@ pub unsafe fn putenv(handle: *mut PamHandle, name_value: *const c_char) -> PamRe
 }
 
 #[inline]
-pub unsafe fn getenv<'a>(handle: &'a mut PamHandle, name: *const c_char) -> Option<&'a str> {
+pub unsafe fn getenv(handle: &mut PamHandle, name: *const c_char) -> Option<&str> {
     CStr::from_ptr(pam_getenv(handle, name)).to_str().ok()
 }
 
 #[inline]
-pub unsafe fn getenvlist(handle: *mut PamHandle) -> *mut *mut c_char {
+pub unsafe fn getenvlist(handle: *mut PamHandle) -> *const *const c_char {
     //TODO: find a convenient way to handle this with Rust types
     pam_getenvlist(handle)
 }
 /* ----------------------- _pam_types.h ------------------------- */
 
 /* ----------------------- pam_misc.h --------------------------- */
+#[inline]
 pub unsafe fn misc_paste_env(handle: *mut PamHandle,
                              user_env: *const *const c_char)
                              -> PamReturnCode {
     From::from(pam_misc_paste_env(handle, user_env))
 }
 
-pub unsafe fn misc_drop_env(env: *mut *mut c_char) -> *mut *mut c_char {
-    pam_misc_drop_env(env)
+#[inline]
+pub unsafe fn misc_drop_env(env: *mut *mut c_char) -> PamReturnCode {
+    From::from(pam_misc_drop_env(env))
 }
 
+#[inline]
 pub unsafe fn misc_setenv(handle: *mut PamHandle,
                           name: *const c_char,
                           value: *const c_char,
-                          readonly: c_int)
+                          readonly: bool)
                           -> PamReturnCode {
-    From::from(pam_misc_setenv(handle, name, value, readonly))
+    From::from(pam_misc_setenv(handle, name, value, if readonly {0} else {1}))
 }
 /* ----------------------- pam_misc.h --------------------------- */
 
