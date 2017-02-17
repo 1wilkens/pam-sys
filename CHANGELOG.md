@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - Added travis-ci badge to `Cargo.toml`
+- Added categories to `Cargo.toml`
 
 ### Changed
 - Changed `raw::pam_getenvlist`'s return type back to `*const *const c_char`

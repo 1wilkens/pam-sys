@@ -9,6 +9,8 @@ documentation = "https://docs.rs/pam-sys/"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
 
+categories = ["authentication", "api-bindings", "external-ffi-bindings", "os.categories.unix-apis"]
+
 build = "build.rs"
 links = "pam"
 
