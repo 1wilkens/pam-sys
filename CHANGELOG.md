@@ -12,7 +12,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## [Unreleased]
-## Fixed
+
+## [0.5.1] - 2017-02-17
+### Fixed
 - Fixed compilation failure on Rust 1.4.0
 - Fixed wrong category
 
@@ -63,7 +65,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - PamHandle from empty struct to zero variant enum (as recommended in [the Rust Book](https://doc.rust-lang.org/nightly/book/ffi.html#representing-opaque-structs))
 
 
-[Unreleased]: https://github.com/1wilkens/pam-sys/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/1wilkens/pam-sys/compare/v0.5.1...HEAD
+[0.5.0]: https://github.com/1wilkens/pam-sys/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/1wilkens/pam-sys/compare/v0.4.3...v0.5.0
 [0.4.3]: https://github.com/1wilkens/pam-sys/compare/v0.4.1...v0.4.3
 [0.4.1]: https://github.com/1wilkens/pam-sys/compare/v0.4.0...v0.4.1
