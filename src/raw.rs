@@ -72,7 +72,7 @@ extern "C" {
 
     pub fn pam_getenv(pamh: *mut PamHandle, name: *const c_char) -> *const c_char;
 
-    pub fn pam_getenvlist(pamh: *mut PamHandle) -> *mut *mut c_char;
+    pub fn pam_getenvlist(pamh: *mut PamHandle) -> *const *const c_char;
     /* ----------------------- _pam_types.h ------------------------- */
 
     /* ----------------------- pam_misc.h --------------------------- */
