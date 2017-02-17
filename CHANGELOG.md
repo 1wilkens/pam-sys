@@ -12,6 +12,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## [Unreleased]
+## Fixed
+- Fixed compilation failure on Rust 1.4.0
+- Fixed wrong category
 
 ## [0.5.0] - 2017-02-17
 ### Added
