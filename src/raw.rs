@@ -1,4 +1,4 @@
-// Copyright (C) 2015 Florian Wilkens
+// Copyright (C) 2015-2017 Florian Wilkens
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
