@@ -133,10 +133,13 @@ pub fn putenv(handle: &mut PamHandle, name_value: &str) -> PamReturnCode {
 #[inline]
 pub fn getenv<'a>(handle: &'a mut PamHandle, name: &str) -> Option<&'a str> {
     if let Ok(name) = CString::new(name) {
-        unsafe { CStr::from_ptr(pam_getenv(handle, name.as_ptr())) }.to_str().ok()
-    } else {
-        None
+        let ptr = unsafe { pam_getenv(handle, name.as_ptr()) };
+        if !ptr.is_null() {
+            return unsafe { CStr::from_ptr(ptr).to_str().ok() };
+        }
     }
+
+    None
 }
 
 #[inline]
@@ -160,9 +163,14 @@ pub fn misc_paste_env(handle: &mut PamHandle, user_env: &[&str]) -> PamReturnCod
     From::from(unsafe { pam_misc_paste_env(handle, env_ptrs.as_ptr()) })
 }
 
+// TODO: make this safe without messing up the types
 #[inline]
-pub fn misc_drop_env(env: &mut *mut c_char) -> PamReturnCode {
-    From::from(unsafe { pam_misc_drop_env(env) })
+pub unsafe fn misc_drop_env(env: *const *const c_char) -> PamReturnCode {
+    if !env.is_null() {
+        From::from(pam_misc_drop_env(env))
+    } else {
+        PamReturnCode::BUF_ERR
+    }
 }
 
 #[inline]
@@ -176,7 +184,7 @@ pub fn misc_setenv(handle: &mut PamHandle,
             pam_misc_setenv(handle,
                             name.as_ptr(),
                             value.as_ptr(),
-                            if readonly { 0 } else { 1 })
+                            if readonly { 1 } else { 0 })
         })
     } else {
         PamReturnCode::BUF_ERR

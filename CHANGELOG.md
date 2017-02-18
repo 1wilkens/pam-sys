@@ -13,7 +13,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.3] - 2017-02-18
+### Changed
+- Changed `{raw,wrapped}::pam_misc_dropenv`'s signature back to accept `*const *const c_char`
+
+### Fixed
+- Fixed `wrapped::getenv` to check for `null` before dereferencing the pointer returned by `raw::pam_getenv`
+- Fixed typo in `wrapped::misc_setenv`
+
 ## [0.5.2] - 2017-02-18
+### Fixed
 - Fixed missing link argument to `pam_misc`
 
 ## [0.5.1] - 2017-02-17
