@@ -76,12 +76,15 @@ extern "C" {
     /* ----------------------- _pam_types.h ------------------------- */
 
     /* ----------------------- pam_misc.h --------------------------- */
+    #[cfg(not(target_os = "macos"))]
     pub fn pam_misc_paste_env(pamh: *mut PamHandle,
                               user_env: *const *const c_char)
                               -> c_int;
 
+    #[cfg(not(target_os = "macos"))]
     pub fn pam_misc_drop_env(env: *mut *mut c_char) -> c_int;
 
+    #[cfg(not(target_os = "macos"))]
     pub fn pam_misc_setenv(pamh: *mut PamHandle,
                            name: *const c_char,
                            value: *const c_char,
