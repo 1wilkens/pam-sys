@@ -1,7 +1,7 @@
 fn main() {
     //TODO: expand this
     println!("cargo:rustc-link-lib=pam");
-    if cfg!(not(target_os = "macos")) {
+    if cfg!(target_os = "linux") {
         println!("cargo:rustc-link-lib=pam_misc");
     }
 }

@@ -148,7 +148,7 @@ pub fn getenvlist(handle: &mut PamHandle) -> *const *const c_char {
 
 /* ----------------------- pam_misc.h --------------------------- */
 #[inline]
-#[cfg(not(target_os = "macos"))]
+#[cfg(target_os = "linux")]
 pub fn misc_paste_env(handle: &mut PamHandle, user_env: &[&str]) -> PamReturnCode {
     // Taken from: https://github.com/rust-lang/rust/issues/9564#issuecomment-95354558
     let user_env: Vec<_> = user_env.iter()
@@ -162,13 +162,13 @@ pub fn misc_paste_env(handle: &mut PamHandle, user_env: &[&str]) -> PamReturnCod
 }
 
 #[inline]
-#[cfg(not(target_os = "macos"))]
+#[cfg(target_os = "linux")]
 pub fn misc_drop_env(env: &mut *mut c_char) -> PamReturnCode {
     From::from(unsafe { pam_misc_drop_env(env) })
 }
 
 #[inline]
-#[cfg(not(target_os = "macos"))]
+#[cfg(target_os = "linux")]
 pub fn misc_setenv(handle: &mut PamHandle,
                    name: &str,
                    value: &str,
