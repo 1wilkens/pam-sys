@@ -40,20 +40,20 @@ extern "C" {
 
     pub fn pam_end(pamh: *mut PamHandle, pam_status: c_int) -> c_int;
 
-    /* Authentication API's */
+    /* Authentication APIs */
     pub fn pam_authenticate(pamh: *mut PamHandle, flags: c_int) -> c_int;
 
     pub fn pam_setcred(pamh: *mut PamHandle, flags: c_int) -> c_int;
 
-    /* Account Management API's */
+    /* Account Management APIs */
     pub fn pam_acct_mgmt(pamh: *mut PamHandle, flags: c_int) -> c_int;
 
-    /* Session Management API's */
+    /* Session Management APIs */
     pub fn pam_open_session(pamh: *mut PamHandle, flags: c_int) -> c_int;
 
     pub fn pam_close_session(pamh: *mut PamHandle, flags: c_int) -> c_int;
 
-    /* Password Management API's */
+    /* Password Management APIs */
     pub fn pam_chauthtok(pamh: *mut PamHandle, flags: c_int) -> c_int;
     /* ------------------------ pam_appl.h -------------------------- */
 
@@ -94,7 +94,6 @@ extern "C" {
 
     /* ----------------------- pam_modules.h ------------------------ */
     /* -------------------- The Linux-PAM Module PI ----------------- */
-
     pub fn pam_set_data(pamh: *mut PamHandle,
                         module_data_name: *const c_char,
                         data: *mut c_void,
