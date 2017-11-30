@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## [Unreleased]
+### Changed
+- Addded `cache: cargo` directive to speedup CI
 
 ## [0.5.4] - 2017-11-30
 ### Changed
