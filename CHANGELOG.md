@@ -12,6 +12,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## [Unreleased]
+### Changed
+- Only provide official support for Rust stable, beta and nightly (mainly through travis)
+
 ### Fixed
 - Only link `pam_misc` on Linux
 
