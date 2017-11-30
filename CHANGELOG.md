@@ -12,8 +12,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## [Unreleased]
+### Fixed
+- Only link `pam_misc` on Linux
+
+## [0.5.3] - 2017-02-18
+### Fixed
+- Fixed `readonly` flag in `pam_misc_setenv`
+- Added some `null` checks for some `wrapped` functions
 
 ## [0.5.2] - 2017-02-18
+### Fixed
 - Fixed missing link argument to `pam_misc`
 
 ## [0.5.1] - 2017-02-17
