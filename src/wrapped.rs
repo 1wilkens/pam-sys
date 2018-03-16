@@ -203,6 +203,20 @@ pub fn set_data(handle: &mut PamHandle,
 }
 
 //pub fn get_data(handle: *const PamHandle, module_data_name: *const c_char, data: *const *const c_void);
-//
-//pub fn get_user(pamh: &mut PamHandle, user: *const *const c_char, prompt: *const c_char);
+
+pub fn get_user(handle: &PamHandle,
+                user: &mut *const c_char,
+                prompt: *const c_char)
+                -> PamReturnCode {
+    From::from(
+        unsafe {
+            pam_get_user(
+                handle,
+                user,
+                prompt
+            )
+        }
+    )
+}
+
 /* ----------------------- pam_modules.h ------------------------ */

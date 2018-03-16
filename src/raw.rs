@@ -105,7 +105,7 @@ extern "C" {
                         data: *mut *const c_void)
                         -> c_int;
 
-    pub fn pam_get_user(pamh: *mut PamHandle,
+    pub fn pam_get_user(pamh: *const PamHandle,
                         user: *mut *const c_char,
                         prompt: *const c_char)
                         -> c_int;
