@@ -12,8 +12,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## [Unreleased]
+### Added
+- Implement `pam_get_user`
+
 ### Changed
 - Addded `cache: cargo` directive to speedup CI
+- Updated `libc` dependency (0.2.33 -> 0.2.39)
 
 ## [0.5.4] - 2017-11-30
 ### Changed
