@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## [Unreleased]
+
+## [0.5.5] - 2018-03-21
 ### Added
 - Implement `pam_get_user`
 
@@ -88,7 +90,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - PamHandle from empty struct to zero variant enum (as recommended in [the Rust Book](https://doc.rust-lang.org/nightly/book/ffi.html#representing-opaque-structs))
 
 
-[Unreleased]: https://github.com/1wilkens/pam-sys/compare/v0.5.4...HEAD
+[Unreleased]: https://github.com/1wilkens/pam-sys/compare/v0.5.5...HEAD
+[0.5.5]: https://github.com/1wilkens/pam-sys/compare/v0.5.4...v0.5.5
 [0.5.4]: https://github.com/1wilkens/pam-sys/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/1wilkens/pam-sys/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/1wilkens/pam-sys/compare/v0.5.1...v0.5.2
