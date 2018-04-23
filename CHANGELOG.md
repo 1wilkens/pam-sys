@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## [Unreleased]
+- Fixed NULL pointer usage in wrapped::get_env function when pam_getenv fails.
 
 ## [0.5.5] - 2018-03-21
 ### Added
