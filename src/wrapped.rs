@@ -132,8 +132,15 @@ pub fn putenv(handle: &mut PamHandle, name_value: &str) -> PamReturnCode {
 
 #[inline]
 pub fn getenv<'a>(handle: &'a mut PamHandle, name: &str) -> Option<&'a str> {
+    use std::ptr;
     if let Ok(name) = CString::new(name) {
-        unsafe { CStr::from_ptr(pam_getenv(handle, name.as_ptr())) }.to_str().ok()
+        let env = unsafe{pam_getenv(handle, name.as_ptr())};
+        if env != ptr::null(){
+            unsafe { CStr::from_ptr(env) }.to_str().ok()
+        }
+        else{
+            None
+        }
     } else {
         None
     }
@@ -208,6 +215,7 @@ pub fn get_user(handle: &PamHandle,
                 user: &mut *const c_char,
                 prompt: *const c_char)
                 -> PamReturnCode {
+                
     From::from(
         unsafe {
             pam_get_user(
