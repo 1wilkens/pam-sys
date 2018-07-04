@@ -12,8 +12,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## [Unreleased]
+
+## [0.5.6] - 2018-07-04
 ### Fixed
-- Fixed NULL pointer usage in wrapped::get_env function when pam_getenv fails.
+- Fixed NULL pointer usage in wrapped::get_env function when pam_getenv fails
 
 ## [0.5.5] - 2018-03-21
 ### Added
@@ -92,7 +94,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - PamHandle from empty struct to zero variant enum (as recommended in [the Rust Book](https://doc.rust-lang.org/nightly/book/ffi.html#representing-opaque-structs))
 
 
-[Unreleased]: https://github.com/1wilkens/pam-sys/compare/v0.5.5...HEAD
+[Unreleased]: https://github.com/1wilkens/pam-sys/compare/v0.5.6...HEAD
+[0.5.6]: https://github.com/1wilkens/pam-sys/compare/v0.5.5...v0.5.6
 [0.5.5]: https://github.com/1wilkens/pam-sys/compare/v0.5.4...v0.5.5
 [0.5.4]: https://github.com/1wilkens/pam-sys/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/1wilkens/pam-sys/compare/v0.5.2...v0.5.3
