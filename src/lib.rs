@@ -8,8 +8,8 @@
 //! for authentication with PAM rather than writing a custom PAM module are provided.
 extern crate libc;
 
-pub use types::*;
-pub use wrapped::*;
+pub use crate::types::*;
+pub use crate::wrapped::*;
 
 pub mod raw;
 #[allow(non_camel_case_types, clippy::match_same_arms)]

@@ -8,9 +8,9 @@ repository = "https://github.com/1wilkens/pam-sys"
 documentation = "https://docs.rs/pam-sys/"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
-
 categories = ["authentication", "api-bindings", "external-ffi-bindings", "os::unix-apis"]
 
+edition = "2018"
 build = "build.rs"
 links = "pam"
 
@@ -18,4 +18,4 @@ links = "pam"
 travis-ci = { repository = "1wilkens/pam-sys" }
 
 [dependencies]
-libc = "0.2.39"
+libc = "^0.2"

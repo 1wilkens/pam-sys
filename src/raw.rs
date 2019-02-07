@@ -10,7 +10,7 @@
 
 use libc::{c_char, c_int, c_void};
 
-use types::*;
+use crate::types::*;
 
 extern "C" {
     /* ------------------------ pam_appl.h -------------------------- */

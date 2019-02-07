@@ -59,8 +59,7 @@ pub struct PamResponse {
 /// "The actual conversation structure itself"
 #[repr(C)]
 pub struct PamConversation {
-    /* int (*conv)(int num_msg, const struct pam_message **msg,
-        struct pam_response **resp, void *appdata_ptr); */
+    /* int (*conv)(int num_msg, const struct pam_message **msg, struct pam_response **resp, void *appdata_ptr); */
     pub conv: Option<ConvClosure>,
     pub data_ptr: *mut c_void,
 }

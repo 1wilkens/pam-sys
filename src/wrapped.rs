@@ -13,8 +13,8 @@ use libc::{c_char, c_int, c_void};
 use std::ffi::{CStr, CString};
 use std::ptr::null;
 
-use types::*;
-use raw::*;
+use crate::types::*;
+use crate::raw::*;
 
 /* ------------------------ pam_appl.h -------------------------- */
 #[inline]
@@ -198,7 +198,6 @@ pub fn get_user(handle: &PamHandle,
                 user: &mut *const c_char,
                 prompt: *const c_char)
                 -> PamReturnCode {
-                
     From::from(
         unsafe {
             pam_get_user(
