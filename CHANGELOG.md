@@ -12,6 +12,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## [Unreleased]
+### Changed
+- Update to rust edition 2018
+- Update `libc` dependency (0.2.39 -> ^0.2)
 
 ## [0.5.6] - 2018-07-04
 ### Fixed
