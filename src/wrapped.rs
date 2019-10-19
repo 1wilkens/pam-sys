@@ -209,3 +209,22 @@ pub fn get_user(handle: &PamHandle,
 }
 
 /* ----------------------- pam_modules.h ------------------------ */
+
+/* ----------------------- pam_ext.h ---------------------------- */
+pub fn get_authtok(handle: &PamHandle,
+                   item: PamItemType,
+                   authtok: &mut *const c_char,
+                   prompt: Option<&CStr>)
+                   -> PamReturnCode {
+    From::from(
+        unsafe {
+            pam_get_authtok(
+                handle,
+                item as c_int,
+                authtok,
+                prompt.map(|str| str.as_ptr()).unwrap_or(std::ptr::null())
+            )
+        }
+    )
+}
+/* ----------------------- pam_ext.h ---------------------------- */

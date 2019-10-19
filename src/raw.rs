@@ -93,4 +93,12 @@ extern "C" {
                         prompt: *const c_char)
                         -> c_int;
     /* ----------------------- pam_modules.h ------------------------ */
+
+    /* ----------------------- pam_ext.h ---------------------------- */
+    pub fn pam_get_authtok(pamh: *const PamHandle,
+                           item: c_int,
+                           authtok: *mut *const c_char,
+                           prompt: *const c_char)
+                           -> c_int;
+    /* ----------------------- pam_ext.h ---------------------------- */
 }
