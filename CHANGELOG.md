@@ -15,6 +15,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Update to rust edition 2018
 - Update `libc` dependency (0.2.39 -> ^0.2)
+- Fix clippy lint and improve API of `wrapped::get_user`
 
 ## [0.5.6] - 2018-07-04
 ### Fixed
