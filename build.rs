@@ -31,16 +31,22 @@ fn main() {
         .raw_line("use libc::{uid_t, gid_t, group, passwd, spwd};")
         // And use just `raw` as type prefix
         .ctypes_prefix("libc")
-        // Whitelist all PAM constants
-        .whitelist_var("PAM_.*")
-        // Whitelist all PAM functions
-        .whitelist_function("pam_.*")
+        // Blacklist varargs functions and related types for now
+        // TODO: find a nice solution for this
+        .blacklist_type("va_list")
+        .blacklist_type("__builtin_va_list")
+        .blacklist_type("__va_list_tag")
+        .blacklist_function("pam_v.*")
         // Blacklist types we use from libc
         .blacklist_type(".*gid_t")
         .blacklist_type(".*uid_t")
         .blacklist_type("group")
         .blacklist_type("passwd")
         .blacklist_type("spwd")
+        // Whitelist all PAM constants
+        .whitelist_var("PAM_.*")
+        // Whitelist all PAM functions
+        .whitelist_function("pam_.*")
         // Finish the builder and generate the bindings.
         .generate()
         // Unwrap the Result and panic on failure.
