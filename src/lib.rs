@@ -1,13 +1,12 @@
 //! FFI wrappers for the Linux Pluggable Authentication Modules (PAM)
 //!
-//! This crate provides easy access to the Linux-PAM. Both raw and wrapped versions
-//! of the common functions from `libpam.so` are provided as well as types used in
-//! these functions.
+//! This crate provides raw access to the Linux-PAM API.
+//! Constants, types and functions are supported and created with `bindgen`.
 //!
-//! Note: Not all functions are fully supported yet. For now mainly the ones required
-//! for authentication with PAM rather than writing a custom PAM module are provided.
-#![allow(non_upper_case_globals)]
-#![allow(non_camel_case_types)]
-#![allow(non_snake_case)]
+//! Note: Currently only tested on linux as I lack access to other OSes at
+//! the moment. Both `build.rs` and `wrapper.h` probably need to be customized
+//! to exclude missing libraries such as `pam_misc` when they are not present.
+
+#![allow(non_upper_case_globals, non_camel_case_types, non_snake_case)]
 
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
