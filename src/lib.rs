@@ -6,12 +6,8 @@
 //!
 //! Note: Not all functions are fully supported yet. For now mainly the ones required
 //! for authentication with PAM rather than writing a custom PAM module are provided.
-extern crate libc;
+#![allow(non_upper_case_globals)]
+#![allow(non_camel_case_types)]
+#![allow(non_snake_case)]
 
-pub use crate::types::*;
-pub use crate::wrapped::*;
-
-pub mod raw;
-#[allow(non_camel_case_types, clippy::match_same_arms)]
-pub mod types;
-pub mod wrapped;
+include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
