@@ -1,7 +1,9 @@
-# pam-sys [![Version](https://img.shields.io/crates/v/pam-sys.svg)](https://crates.io/crates/pam-sys) [![License](https://img.shields.io/crates/l/pam-sys.svg?branch=master)](https://travis-ci.org/1wilkens/pam-sys) [![Build Status](https://travis-ci.org/1wilkens/pam-sys.svg?branch=master)](https://travis-ci.org/1wilkens/pam-sys)
-Rust FFI wrappers for the Linux Pluggable Authentication Modules (PAM).
+[![Crates.io](https://img.shields.io/crates/v/pam-sys.svg)](https://crates.io/crates/pam-sys)
+[![Documentation](https://docs.rs/pam-sys/badge.svg)](https://docs.rs/pam-sys/)
+[![Build Status](https://travis-ci.org/1wilkens/pam-sys.svg?branch=master)](https://travis-ci.org/1wilkens/pam-sys)
+[![License](https://img.shields.io/crates/l/pam-sys.svg?branch=master)](https://travis-ci.org/1wilkens/pam-sys)
 
-[Documentation @ docs.rs](https://docs.rs/pam-sys/)
+Rust FFI wrappers for the Linux Pluggable Authentication Modules (PAM).
 
 ## Supported Rust versions
 The library is only continuously built against Rust stable, beta and nightly but as it does not use a lot of new language features it should probably compile on older versions as well.
