@@ -1,5 +1,9 @@
 stages:
- - template: azure/stages.yml@templates
+  - template: azure/stages.yml@templates
+    parameters:
+      cross: false
+      setup:
+        - script: sudo apt install libpam0g-dev
 
 resources:
   repositories:
