@@ -1,9 +1,9 @@
 [![Crates.io](https://img.shields.io/crates/v/pam-sys.svg)](https://crates.io/crates/pam-sys)
 [![Documentation](https://docs.rs/pam-sys/badge.svg)](https://docs.rs/pam-sys/)
-[![Build Status](https://travis-ci.org/1wilkens/pam-sys.svg?branch=master)](https://travis-ci.org/1wilkens/pam-sys)
+[![Build Status](https://dev.azure.com/1wilkens/pam-sys/_apis/build/status/pam-sys?branchName=master)](https://dev.azure.com/1wilkens/pam-sys/_build/latest?definitionId=1&branchName=master)
 [![License](https://img.shields.io/crates/l/pam-sys.svg?branch=master)](https://travis-ci.org/1wilkens/pam-sys)
 
-Rust FFI wrappers for the Linux Pluggable Authentication Modules (PAM).
+Rust FFI wrappers for the Linux Pluggable Authentication Modules (PAM). This crate uses [`bindgen`](https://github.com/rust-lang/rust-bindgen) to generate the raw FFI definitions for PAM. For a rustified API consider using [`pam`](https://github.com/1wilkens/pam).
 
 ## Supported Rust versions
 The library is only continuously built against Rust stable, beta and nightly but as it does not use a lot of new language features it should probably compile on older versions as well.
