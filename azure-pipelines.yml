@@ -9,5 +9,5 @@ resources:
   repositories:
     - repository: templates
       type: github
-      name: 1wilkens/azure-pipelines
+      name: crate-ci/azure-pipelines
       endpoint: 1wilkens
