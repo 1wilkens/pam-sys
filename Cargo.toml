@@ -21,4 +21,4 @@ travis-ci = { repository = "1wilkens/pam-sys" }
 libc = "^0.2.65"
 
 [build-dependencies]
-bindgen = "0.51"
+bindgen = "=0.53.2"
