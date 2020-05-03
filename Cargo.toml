@@ -1,7 +1,7 @@
 [package]
 
 name = "pam-sys"
-version = "1.0.0-alpha1"
+version = "1.0.0-alpha2"
 authors = ["Florian Wilkens <gh@1wilkens.org>"]
 description = "FFI wrappers for the Linux Pluggable Authentication Modules (PAM)"
 license = "MIT OR Apache-2.0"

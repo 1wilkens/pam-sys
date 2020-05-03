@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## [Unreleased]
+
+## [1.0.0-alpha2] - 2020-05-03
 ### Changed
 - Pin `bindgen` vesion for now to avoid accidental changes in the bindings
 - Move CI to azure pipelines (and remove `.travis.yml`)
@@ -109,7 +111,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - PamHandle from empty struct to zero variant enum (as recommended in [the Rust Book](https://doc.rust-lang.org/nightly/book/ffi.html#representing-opaque-structs))
 
 
-[Unreleased]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha1...HEAD
+[Unreleased]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha2...HEAD
+[1.0.0-alpha1]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha1...v1.0.0-alpha2
 [1.0.0-alpha1]: https://github.com/1wilkens/pam-sys/compare/v0.5.6...v1.0.0-alpha1
 [0.5.6]: https://github.com/1wilkens/pam-sys/compare/v0.5.5...v0.5.6
 [0.5.5]: https://github.com/1wilkens/pam-sys/compare/v0.5.4...v0.5.5
