@@ -22,4 +22,4 @@ azure-devops = { project = "1wilkens/ci", pipeline = "pam-sys" }
 libc = "^0.2.65"
 
 [build-dependencies]
-bindgen = "0.51"
+bindgen = "=0.53.2"

@@ -22,14 +22,8 @@ fn main() {
         // The input header we would like to generate
         // bindings for.
         .header("wrapper.h")
-        // Tell cargo to invalidate the built crate whenever any of the
-        // included header files changed.
-        // TODO: find out what is broken here
-        //.parse_callbacks(Box::new(bindgen::CargoCallbacks))
-        //
-        // Import std::os::raw so our signatures a slightly nicer
+        // Import libc so our signatures are slightly nicer
         .raw_line("use libc::{uid_t, gid_t, group, passwd, spwd};")
-        // And use just `raw` as type prefix
         .ctypes_prefix("libc")
         // Blacklist varargs functions and related types for now
         // TODO: find a nice solution for this
@@ -45,8 +39,10 @@ fn main() {
         .blacklist_type("spwd")
         // Whitelist all PAM constants
         .whitelist_var("PAM_.*")
-        // Whitelist all PAM functions
+        // Whitelist all PAM functions..
         .whitelist_function("pam_.*")
+        // ..except module related functions (pam_sm_*)
+        .blacklist_function("pam_sm_.*")
         // Finish the builder and generate the bindings.
         .generate()
         // Unwrap the Result and panic on failure.

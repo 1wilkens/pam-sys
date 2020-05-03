@@ -13,7 +13,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Changed
+- Pin `bindgen` vesion for now to avoid accidental changes in the bindings
 - Move CI to azure pipelines (and remove `.travis.yml`)
+
+### Removed
+- Remove module functions `pam_sm_*` as these are not supposed to be called but rather implemented by modules
 
 ## [1.0.0-alpha1] - 2019-11-12
 ### Changed
@@ -22,7 +26,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
     - Easier multi-platform handling
 - Update to rust edition 2018
 - Update `libc` dependency (0.2.39 -> ^0.2)
-- ~Fix clippy lint and improve API of `wrapped::get_user`~
+- Fix `clippy` lints
 
 ## [0.5.6] - 2018-07-04
 ### Fixed
