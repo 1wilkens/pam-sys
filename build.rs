@@ -25,6 +25,9 @@ fn main() {
         // Import libc so our signatures are slightly nicer
         .raw_line("use libc::{uid_t, gid_t, group, passwd, spwd};")
         .ctypes_prefix("libc")
+        // Set macro constants to signed int, as all functions that accept
+        // these constants use signed int as the parameter type
+        .default_macro_constant_type(bindgen::MacroTypeVariation::Signed)
         // Blacklist varargs functions and related types for now
         // TODO: find a nice solution for this
         .blacklist_type("va_list")
