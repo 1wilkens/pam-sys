@@ -28,6 +28,8 @@ fn main() {
         // Set macro constants to signed int, as all functions that accept
         // these constants use signed int as the parameter type
         .default_macro_constant_type(bindgen::MacroTypeVariation::Signed)
+        // pam_handle is opaque, don't implement Copy
+        .no_copy("pam_handle")
         // Blacklist varargs functions and related types for now
         // TODO: find a nice solution for this
         .blacklist_type("va_list")
