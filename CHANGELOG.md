@@ -12,6 +12,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## [Unreleased]
+### Changed
+- Depend on `bindgen` ^0.55 to force macro constants to be generated as signed integers
+- Don't derive `Copy` for `PamHandle`
 
 ## [1.0.0-alpha2] - 2020-05-03
 ### Changed
