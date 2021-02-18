@@ -115,7 +115,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 [Unreleased]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha2...HEAD
-[1.0.0-alpha1]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha1...v1.0.0-alpha2
+[1.0.0-alpha2]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha1...v1.0.0-alpha2
 [1.0.0-alpha1]: https://github.com/1wilkens/pam-sys/compare/v0.5.6...v1.0.0-alpha1
 [0.5.6]: https://github.com/1wilkens/pam-sys/compare/v0.5.5...v0.5.6
 [0.5.5]: https://github.com/1wilkens/pam-sys/compare/v0.5.4...v0.5.5
