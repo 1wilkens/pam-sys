@@ -20,7 +20,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.0.0-alpha2] - 2020-05-03
 ### Changed
-- Pin `bindgen` vesion for now to avoid accidental changes in the bindings
+- Pin `bindgen` version for now to avoid accidental changes in the bindings
 - Move CI to azure pipelines (and remove `.travis.yml`)
 
 ### Removed
@@ -44,7 +44,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Implement `pam_get_user`
 
 ### Changed
-- Addded `cache: cargo` directive to speedup CI
+- Added `cache: cargo` directive to speedup CI
 - Updated `libc` dependency (0.2.33 -> 0.2.39)
 
 ## [0.5.4] - 2017-11-30
