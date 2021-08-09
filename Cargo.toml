@@ -20,7 +20,7 @@ links = "pam"
 azure-devops = { project = "1wilkens/ci", pipeline = "pam-sys" }
 
 [dependencies]
-libc = "^0.2.65"
+libc = "0.2.65"
 
 [build-dependencies]
-bindgen = "^0.55"
+bindgen = "0.59"
