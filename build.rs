@@ -1,5 +1,3 @@
-extern crate bindgen;
-
 use std::env;
 use std::path::PathBuf;
 
@@ -32,22 +30,22 @@ fn main() {
         .no_copy("pam_handle")
         // Blacklist varargs functions and related types for now
         // TODO: find a nice solution for this
-        .blacklist_type("va_list")
-        .blacklist_type("__builtin_va_list")
-        .blacklist_type("__va_list_tag")
-        .blacklist_function("pam_v.*")
+        .blocklist_type("va_list")
+        .blocklist_type("__builtin_va_list")
+        .blocklist_type("__va_list_tag")
+        .blocklist_function("pam_v.*")
         // Blacklist types we use from libc
-        .blacklist_type(".*gid_t")
-        .blacklist_type(".*uid_t")
-        .blacklist_type("group")
-        .blacklist_type("passwd")
-        .blacklist_type("spwd")
+        .blocklist_type(".*gid_t")
+        .blocklist_type(".*uid_t")
+        .blocklist_type("group")
+        .blocklist_type("passwd")
+        .blocklist_type("spwd")
         // Whitelist all PAM constants
-        .whitelist_var("PAM_.*")
+        .allowlist_var("PAM_.*")
         // Whitelist all PAM functions..
-        .whitelist_function("pam_.*")
+        .allowlist_function("pam_.*")
         // ..except module related functions (pam_sm_*)
-        .blacklist_function("pam_sm_.*")
+        .blocklist_function("pam_sm_.*")
         // Finish the builder and generate the bindings.
         .generate()
         // Unwrap the Result and panic on failure.
