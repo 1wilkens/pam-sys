@@ -7,6 +7,7 @@ fn main() {
     // Tell cargo to tell rustc to link the system pam
     // shared library.
     println!("cargo:rustc-link-lib=pam");
+
     // pam_misc is only supported on Linux afaik
     if cfg!(target_os = "linux") {
         println!("cargo:rustc-link-lib=pam_misc");
@@ -15,15 +16,12 @@ fn main() {
     // Tell cargo to invalidate the built crate whenever the wrapper changes
     println!("cargo:rerun-if-changed=wrapper.h");
 
-    // The bindgen::Builder is the main entry point
-    // to bindgen, and lets you build up options for
-    // the resulting bindings.
-    let bindings = bindgen::Builder::default()
-        // The input header we would like to generate
-        // bindings for.
+    // Prepare bindgen builder
+    let mut builder = bindgen::Builder::default()
+        // Our header
         .header("wrapper.h")
         // Import libc so our signatures are slightly nicer
-        .raw_line("use libc::{uid_t, gid_t, group, passwd, spwd};")
+        .raw_line("use libc::{uid_t, gid_t, group, passwd};")
         .ctypes_prefix("libc")
         // Set macro constants to signed int, as all functions that accept
         // these constants use signed int as the parameter type
@@ -36,18 +34,34 @@ fn main() {
         .blacklist_type("__builtin_va_list")
         .blacklist_type("__va_list_tag")
         .blacklist_function("pam_v.*")
+        .blacklist_function("pam_syslog")
+        .blacklist_function("pam_prompt")
         // Blacklist types we use from libc
         .blacklist_type(".*gid_t")
         .blacklist_type(".*uid_t")
         .blacklist_type("group")
         .blacklist_type("passwd")
-        .blacklist_type("spwd")
         // Whitelist all PAM constants
         .whitelist_var("PAM_.*")
         // Whitelist all PAM functions..
         .whitelist_function("pam_.*")
         // ..except module related functions (pam_sm_*)
-        .blacklist_function("pam_sm_.*")
+        .blacklist_function("pam_sm_.*");
+
+    // Platform-specific adaptions
+    if cfg!(target_os = "linux") {
+        // On Linux we also use spwd from libc
+        builder = builder
+            .raw_line("use libc::spwd;")
+            .blacklist_type("spwd");
+    } else if cfg!(target_os = "freebsd") {
+        // XXX: this should include all OS that use openPAM
+        builder = builder
+            .raw_line("pub const PAM_SILENT: libc::c_uint = 0x8000_0000;")
+            .blacklist_type("PAM_SILENT");
+    }
+
+    let bindings = builder
         // Finish the builder and generate the bindings.
         .generate()
         // Unwrap the Result and panic on failure.
