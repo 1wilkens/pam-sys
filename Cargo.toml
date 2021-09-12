@@ -10,7 +10,7 @@ categories = ["authentication", "api-bindings", "external-ffi-bindings", "os::un
 repository = "https://github.com/1wilkens/pam-sys.git"
 documentation = "https://docs.rs/pam-sys/"
 readme = "README.md"
-include = [ "src/lib.rs", "LICENSE-*", "README.md", "CHANGELOG.md", "wrapper.h", "build.rs", "Cargo.toml" ]
+include = [ "LICENSE-*", "README.md", "CHANGELOG.md", "src/lib.rs", "build.rs", "wrapper.h"]
 
 edition = "2018"
 build = "build.rs"

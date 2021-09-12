@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Changed
 - Support FreeBSD by manually setting `PAM_SILENT`
+- Slightly optimize `include` setting in `Cargo.toml`
 
 ## [1.0.0-alpha3] - 2021-03-28
 ### Changed
