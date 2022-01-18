@@ -51,9 +51,7 @@ fn main() {
     // Platform-specific adaptions
     if cfg!(target_os = "linux") {
         // On Linux we also use spwd from libc
-        builder = builder
-            .raw_line("use libc::spwd;")
-            .blacklist_type("spwd");
+        builder = builder.raw_line("use libc::spwd;").blacklist_type("spwd");
     } else if cfg!(target_os = "freebsd") {
         // XXX: this should include all OS that use openPAM
         builder = builder
