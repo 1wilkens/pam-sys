@@ -10,7 +10,9 @@
 #endif
 
 #ifdef __FreeBSD__
+#include <security/openpam.h>
+#include <security/openpam_version.h>
 #include <security/pam_constants.h>
-#include <security/pam_modules.h>
+//#include <security/pam_modules.h>
 #include <security/pam_types.h>
 #endif

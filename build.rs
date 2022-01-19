@@ -20,45 +20,46 @@ fn main() {
     let mut builder = bindgen::Builder::default()
         // Our header
         .header("wrapper.h")
+        // Use libc for c-types
         .ctypes_prefix("libc")
-        // Set macro constants to signed int, as all functions that accept
-        // these constants use signed int as the parameter type
-        .default_macro_constant_type(bindgen::MacroTypeVariation::Signed)
-        // pam_handle is opaque, don't implement Copy
-        .no_copy("pam_handle")
-        // Blacklist varargs functions and related types for now
+        // pam_handle_t is opaque
+        .opaque_type("pam_handle_t")
+        // Block varargs functions and related types for now
         // TODO: find a nice solution for this
-        .blacklist_type("va_list")
-        .blacklist_type("__va_list")
-        .blacklist_type("__builtin_va_list")
-        .blacklist_type("__va_list_tag")
-        .blacklist_function("pam_v.*")
-        .blacklist_function("pam_syslog")
-        .blacklist_function("pam_prompt")
-        // Whitelist all PAM constants
-        .whitelist_var("PAM_.*")
-        // Whitelist all PAM functions..
-        .whitelist_function("pam_.*")
+        .blocklist_type("va_list")
+        .blocklist_type("__va_list")
+        .blocklist_type("__builtin_va_list")
+        .blocklist_type("__va_list_tag")
+        .blocklist_function("pam_v.*")
+        .blocklist_function("pam_syslog")
+        .blocklist_function("pam_prompt")
+        // Allow all PAM constants
+        .allowlist_var("PAM_.*")
+        // Allow all PAM functions..
+        .allowlist_function("pam_.*")
         // ..except module related functions (pam_sm_*)
-        .blacklist_function("pam_sm_.*");
+        .blocklist_function("pam_sm_.*");
 
     // Platform-specific adaptions
     if cfg!(target_os = "linux") {
-        // Import libc so our signatures are slightly nicer
         builder = builder
+            // Set macro constants to signed int, as all functions that accept
+            // these constants use signed int as the parameter type
+            .default_macro_constant_type(bindgen::MacroTypeVariation::Signed)
+            //
+            // Use libc types so our signatures are slightly nicer
             .raw_line("use libc::{uid_t, gid_t, group, passwd, spwd};")
-            // Blacklist types we use from libc
-            .blacklist_type(".*gid_t")
-            .blacklist_type(".*uid_t")
-            .blacklist_type("group")
-            .blacklist_type("passwd")
-            .blacklist_type("spwd");
-    } else if cfg!(target_os = "freebsd") {
+            .blocklist_type(".*gid_t")
+            .blocklist_type(".*uid_t")
+            .blocklist_type("group")
+            .blocklist_type("passwd")
+            .blocklist_type("spwd");
+    } else if cfg!(target_os = "freebsd") || cfg!(target_os = "netbsd") {
         // XXX: this should include all OS that use openPAM
-        // Fix PAM_SILENT
         builder = builder
-            .raw_line("pub const PAM_SILENT: libc::c_uint = 0x8000_0000;")
-            .blacklist_item("PAM_SILENT");
+            // Use libc types so our signatures are slightly nicer
+            .raw_line("use libc::passwd;")
+            .blocklist_type("passwd");
     }
 
     let bindings = builder
