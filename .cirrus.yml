@@ -42,6 +42,8 @@ anchors:
       #<<: *install_cargo_make_unix
 
   - &base_freebsd
+    install_dependencies_script: |
+      pkg install -y llvm11
     <<: *base_unix
       #<<: *build_cargo_make_unix
 
@@ -108,7 +110,6 @@ test_task:
       <<: *install_target_unix
         #test_bin_script: cargo make test-bin "--target=$TARGET"
         #test_lib_script: cargo make test-lib "--target=$TARGET"
-      install_script: pkg install -y llvm11
       test_lib_script: cargo test "--target=$TARGET"
       <<: *cleanup_before_upload_cache_unix
 
