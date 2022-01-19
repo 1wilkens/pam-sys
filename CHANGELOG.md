@@ -12,8 +12,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 -->
 
 ## [Unreleased]
+
+## [1.0.0-alpha4] - 2022-01-19
 ### Added
 - Explicitly include `security/openpam.h` on FreeBSD
+- Add CI for FreeBSD via cirrus-ci
 
 ### Changed
 - Slightly optimize `include` setting in `Cargo.toml`
@@ -123,8 +126,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - PamHandle from empty struct to zero variant enum (as recommended in [the Rust Book](https://doc.rust-lang.org/nightly/book/ffi.html#representing-opaque-structs))
 
 
-[Unreleased]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha3...HEAD
-[1.0.0-alpha2]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha2...v1.0.0-alpha3
+[Unreleased]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha4...HEAD
+[1.0.0-alpha4]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha3...v1.0.0-alpha4
+[1.0.0-alpha3]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha2...v1.0.0-alpha3
 [1.0.0-alpha2]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha1...v1.0.0-alpha2
 [1.0.0-alpha1]: https://github.com/1wilkens/pam-sys/compare/v0.5.6...v1.0.0-alpha1
 [0.5.6]: https://github.com/1wilkens/pam-sys/compare/v0.5.5...v0.5.6
