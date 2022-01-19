@@ -1,0 +1,343 @@
+---
+# BEGIN: cirrus-anchors.yml
+anchors:
+  #- &install_cargo_make_unix
+  #  install_cargo_make_script: ./.ci/install-cargo-make.sh
+
+  #- &build_cargo_make_unix
+  #  build_cargo_make_cache:
+  #    folder: $CARGO_HOME/opt/cargo-make
+  #    fingerprint_script: |
+  #      echo "$CIRRUS_OS"
+  #      echo "${CI_CACHE_BUST:-}"
+  #      echo "$RUST_VERSION"
+  #      ./.ci/install-cargo-make.sh --print-latest
+  #    populate_script: ./.ci/build-cargo-make.sh
+  #  link_cargo_make_script: ln -snf "$CARGO_HOME"/opt/*/bin/* "$CARGO_HOME"/bin/
+
+  - &base_unix
+    env:
+      CARGO_HOME: /usr/local/cargo
+      PATH: /usr/local/cargo/bin:$PATH
+    install_rustup_script: |
+      curl -sSfL https://sh.rustup.rs | sh -s -- \
+        -y --default-toolchain none --profile minimal --no-modify-path
+    install_rust_script: rustup default "$RUST_VERSION"
+    cargo_cache:
+      folder: $CARGO_HOME/registry
+      fingerprint_script: |
+        if [ ! -f Cargo.lock ]; then
+          cargo generate-lockfile --quiet
+        fi
+        echo "${CIRRUS_OS}"; cat Cargo.lock
+
+  - &base_linux
+    install_dependencies_script: |
+      if command -v yum >/dev/null; then
+        yum install -y unzip
+      else
+        apt-get install -y unzip
+      fi
+    <<: *base_unix
+      #<<: *install_cargo_make_unix
+
+  - &base_freebsd
+    <<: *base_unix
+      #<<: *build_cargo_make_unix
+
+  - &install_target_unix
+    install_rustup_target_script: rustup target install "$TARGET"
+
+      #- &build_bin_unix
+      #  build_script: |
+      #    if [ "${CIRRUS_TAG:-}" = "nightly" ]; then
+      #      export NIGHTLY_BUILD="$(date -u +%F)"
+      #    fi
+      #    cargo make build-release "--bin=$BIN" "--target=$TARGET"
+      #  strip_script: $STRIP "target/$TARGET/release/$BIN"
+      #  rename_script: cp "target/$TARGET/release/$BIN" "${BIN}-${TARGET}"
+
+  - &build_lib_unix
+    build_script: |
+      args=""
+      if [ -n "${FEATURES:-}" ]; then
+        args="--features $FEATURES"
+      fi
+      if [ -n "${NO_DEFAULT_FEATURES:-}" ]; then
+        args="$args --no-default-features"
+      fi
+      if [ -n "${ALL_FEATURES:-}" ]; then
+        args="$args --all-features"
+      fi
+      #cargo make build-release "--lib=$LIB" "--target=$TARGET" $args
+      cargo build "--release --lib=$LIB" "--target=$TARGET" $args
+
+  - &cleanup_before_upload_cache_unix
+    cleanup_before_upload_cache_script: rm -rf "$CARGO_HOME/registry/index"
+
+# END: cirrus-anchors.yml
+
+env:
+  RUST_VERSION: stable
+  MIN_SUPPORTED_RUST_VERSION: 1.46.0 # Due to clap (if in const fn)
+
+test_task:
+  name: test-${RUST_VERSION}-${TARGET}
+  alias: tests
+  only_if:
+    #$CIRRUS_BRANCH !=~ ".*\.tmp" && $CIRRUS_BRANCH != $CIRRUS_DEFAULT_BRANCH
+    $CIRRUS_BRANCH !=~ ".*\.tmp"
+  env:
+    matrix:
+      - RUST_VERSION: stable
+      - RUST_VERSION: nightly
+      - RUST_VERSION: $MIN_SUPPORTED_RUST_VERSION
+  allow_failures: $RUST_VERSION == 'nightly'
+  matrix:
+    - matrix:
+        - env:
+            TARGET: x86_64-unknown-freebsd
+            # Temporary workaround for error `error: sysinfo not supported on
+            # this platform` seen on FreeBSD platforms, affecting Rustup
+            #
+            # References: https://github.com/rust-lang/rustup/issues/2774
+            RUSTUP_IO_THREADS: 1
+          freebsd_instance:
+            image_family: freebsd-13-0
+          <<: *base_freebsd
+      <<: *install_target_unix
+        #test_bin_script: cargo make test-bin "--target=$TARGET"
+        #test_lib_script: cargo make test-lib "--target=$TARGET"
+      install_script: pkg install -y llvm11
+      test_lib_script: cargo test "--target=$TARGET"
+      <<: *cleanup_before_upload_cache_unix
+
+        #build_bin_task:
+        #  name: build-bin-${BIN}-${TARGET}.${EXT}
+        #  alias: build-bins
+        #  only_if:
+        #    $CIRRUS_TAG != '' || $CIRRUS_BRANCH == 'staging' || $CIRRUS_BRANCH ==
+        #    'trying'
+        #  env:
+        #    BIN: fnichol-cime
+        #    RUST_BACKTRACE: "1"
+        #  matrix:
+        #    - matrix:
+        #        - env:
+        #            matrix:
+        #              - TARGET: arm-unknown-linux-gnueabihf
+        #                STRIP: arm-linux-gnueabihf-strip
+        #              - TARGET: aarch64-unknown-linux-gnu
+        #                STRIP: aarch64-linux-gnu-strip
+        #              - TARGET: i686-unknown-linux-gnu
+        #                STRIP: x86_64-linux-gnu-strip
+        #              - TARGET: i686-unknown-linux-musl
+        #                STRIP: i686-linux-musl-strip
+        #              - TARGET: x86_64-unknown-linux-gnu
+        #                STRIP: strip
+        #              - TARGET: x86_64-unknown-linux-musl
+        #                STRIP: x86_64-linux-musl-strip
+        #            EXT: tar.gz
+        #          container:
+        #            image: rustembedded/cross:$TARGET
+        #          depends_on:
+        #            - check
+        #            - test-stable-x86_64-unknown-linux-gnu
+        #          <<: *base_linux
+        #          <<: *install_target_unix
+        #          <<: *build_bin_unix
+        #          archive_script: tar czf "$BIN-$TARGET.$EXT" "$BIN-$TARGET"
+        #        - env:
+        #            TARGET: x86_64-apple-darwin
+        #            STRIP: strip
+        #            EXT: zip
+        #          osx_instance:
+        #            image: catalina-base
+        #          depends_on:
+        #            - check
+        #            - test-stable-x86_64-apple-darwin
+        #          <<: *base_macos
+        #          <<: *install_target_unix
+        #          <<: *build_bin_unix
+        #          archive_script: zip "$BIN-$TARGET" "$BIN-$TARGET"
+        #        - env:
+        #            # Temporary workaround for error `error: sysinfo not supported on
+        #            # this platform` seen on FreeBSD platforms, affecting Rustup
+        #            #
+        #            # References: https://github.com/rust-lang/rustup/issues/2774
+        #            RUSTUP_IO_THREADS: 1
+        #            TARGET: x86_64-unknown-freebsd
+        #            STRIP: strip
+        #            EXT: tar.gz
+        #          freebsd_instance:
+        #            image_family: freebsd-11-4
+        #          depends_on:
+        #            - check
+        #            - test-stable-x86_64-unknown-freebsd
+        #          <<: *base_freebsd
+        #          <<: *install_target_unix
+        #          <<: *build_bin_unix
+        #          archive_script: tar czf "$BIN-$TARGET.$EXT" "$BIN-$TARGET"
+        #      checksums_script: ./.ci/build-checksums.sh "$BIN-$TARGET.$EXT"
+        #      binaries_artifacts:
+        #        path: "$BIN-$TARGET.$EXT*"
+        #      <<: *cleanup_before_upload_cache_unix
+        #    - env:
+        #        TARGET: x86_64-pc-windows-msvc
+        #        EXT: zip
+        #      windows_container:
+        #        image: fnichol/windowsservercore:ltsc2019-vs2019-vctools
+        #      depends_on:
+        #        - check
+        #        - test-stable-x86_64-pc-windows-msvc
+        #      <<: *base_windows
+        #      <<: *install_target_windows
+        #      <<: *build_bin_windows
+        #      archive_script: |
+        #        Compress-Archive "$env:BIN-$env:TARGET.exe" "$env:BIN-$env:TARGET.$env:EXT"
+        #      checksums_script:
+        #        .\.ci\build-checksums.ps1 "$env:BIN-$env:TARGET.$env:EXT"
+        #      binaries_artifacts:
+        #        path: "$BIN-$TARGET.$EXT*"
+        #      <<: *cleanup_before_upload_cache_windows
+
+        #ci_finished_task:
+        #  name: ci-finished
+        #  depends_on:
+        #    - check
+        #    - tests
+        #      #- build-bins
+        #  container:
+        #    image: alpine:3
+        #  clone_script: mkdir -p "$CIRRUS_WORKING_DIR"
+        #  success_script: /bin/true
+
+    #create_github_release_task:
+    #  name: create-github-release
+    #  only_if: $CIRRUS_TAG != ''
+    #  depends_on:
+    #    - build-bins
+    #  container:
+    #    image: alpine:3
+    #  env:
+    #    BIN: fnichol-cime
+    #    GITHUB_TOKEN: ENCRYPTED[78c00056ec53c8575696ccc698a8252991e4805f2d8ab303c89a002f9e05aaf5c848f64c0335dc2892b3ac2318fcaa07]
+    #  install_dependencies_script: apk add curl git jo jq
+    #  create_github_release_script: |
+    #    if ! upload_url="$(
+    #      ./.ci/cirrus-release.sh gh_create_version_release \
+    #        "$CIRRUS_REPO_FULL_NAME" \
+    #        "$CIRRUS_TAG"
+    #    )"; then
+    #      echo "xxx Failed to create release" >&2
+    #      exit 1
+    #    fi
+    #    echo "$upload_url" > /tmp/upload_url
+    #  download_cirrus_artifacts_script: |
+    #    cr="$(readlink -f ./.ci/cirrus-release.sh)"
+    #    manifest="$(readlink -f ".ci/$BIN.manifest.txt")"
+    #    mkdir -p /tmp/release
+    #    cd /tmp/release
+    #    awk '{ print $2 }' "$manifest" | while read -r a; do
+    #      "$cr" ci_download "build-bin-$a/binaries/$a"
+    #      "$cr" ci_download "build-bin-$a/binaries/$a.md5"
+    #      "$cr" ci_download "build-bin-$a/binaries/$a.sha256"
+    #    done
+    #    cp "$manifest" .
+    #    ls -l "$BIN"*
+    #  upload_github_release_artifacts_script: |
+    #    url="$(cat /tmp/upload_url)"
+    #    ./.ci/cirrus-release.sh gh_upload_all "$url" /tmp/release
+    #
+    #build_docker_image_docker_builder:
+    #  name: build-docker-image-${BIN}
+    #  alias: build-docker-images
+    #  only_if: $CIRRUS_TAG != ''
+    #  depends_on:
+    #    - build-bins
+    #    - create-github-release
+    #  env:
+    #    AUTHOR: Fletcher Nichol <fnichol@nichol.ca>
+    #    LICENSE: MPL-2.0
+    #    BIN: fnichol-cime
+    #    REPO: fnichol/$BIN
+    #    IMG: $REPO
+    #    TARGET: x86_64-unknown-linux-musl
+    #    EXT: tar.gz
+    #    ARCHIVE: $BIN-$TARGET.$EXT
+    #    DOCKER_USERNAME: ENCRYPTED[3e38482137ca39fa18416c90a31e9567c6cde8506b30ddba7d083a3799a3d7e55a919976a74b50f47274e0b69233c507]
+    #    DOCKER_PASSWORD: ENCRYPTED[5df55aa8c424d33286f8bfecdb710231fa00809ce41dc517bead679f863ec84c6a8147b93ea9e8888513f01d8f8351a7]
+    #  download_cirrus_artifacts_script: |
+    #    cr="$(readlink -f ./.ci/cirrus-release.sh)"
+    #    mkdir -p /tmp/artifacts
+    #    cd /tmp/artifacts
+    #    "$cr" ci_download "build-bin-$ARCHIVE/binaries/$ARCHIVE"
+    #    "$cr" ci_download "build-bin-$ARCHIVE/binaries/$ARCHIVE.sha256"
+    #  build_script: |
+    #    ./.ci/build-docker-image.sh \
+    #      "$IMG" "${CIRRUS_TAG#v}" "$REPO" "$AUTHOR" "$LICENSE" "$BIN" \
+    #      "/tmp/artifacts/$ARCHIVE"
+    #  login_script: |
+    #    echo "$DOCKER_PASSWORD" \
+    #      | docker login --username "$DOCKER_USERNAME" --password-stdin
+    #  push_script: |
+    #    docker push "$IMG:${CIRRUS_TAG#v}"
+    #    if echo "${CIRRUS_TAG#v}" | grep -q -E '^\d+\.\d+.\d+$'; then
+    #      docker push "$IMG:latest"
+    #    fi
+    #
+    #publish_crate_task:
+    #  name: publish-crate-${CRATE}
+    #  alias: publish-crates
+    #  only_if: $CIRRUS_TAG =~ 'v.*'
+    #  depends_on:
+    #    - create-github-release
+    #    - build-docker-images
+    #  env:
+    #    CRATE: fnichol-cime
+    #    CRATES_IO_TOKEN: ENCRYPTED[0c6ba7d0bd264cf02d59451d0135eb215d2774a9eb86e89dd9bfb3cab6a1c4aaa48a69edfb3d0ae6f4850441e6e591bb]
+    #  container:
+    #    image: rust:latest
+    #  <<: *base_linux
+    #  login_script: echo "$CRATES_IO_TOKEN" | cargo login
+    #  publish_script: cargo publish
+    #
+    #publish_github_release_task:
+    #  name: publish-github-release
+    #  only_if: $CIRRUS_TAG != ''
+    #  depends_on:
+    #    - create-github-release
+    #    - build-docker-images
+    #    - publish-crates
+    #  container:
+    #    image: alpine:3
+    #  env:
+    #    GITHUB_TOKEN: ENCRYPTED[78c00056ec53c8575696ccc698a8252991e4805f2d8ab303c89a002f9e05aaf5c848f64c0335dc2892b3ac2318fcaa07]
+    #  install_dependencies_script: apk add curl jo jq
+    #  publish_release_script: |
+    #    ./.ci/cirrus-release.sh gh_publish_release \
+    #      "$CIRRUS_REPO_FULL_NAME" "$CIRRUS_TAG" CHANGELOG.md
+    #
+    #release_finished_task:
+    #  name: release-finished
+    #  only_if: $CIRRUS_TAG != ''
+    #  depends_on:
+    #    - create-github-release
+    #    - build-docker-images
+    #    - publish-crates
+    #    - publish-github-release
+    #  container:
+    #    image: alpine:3
+    #  clone_script: mkdir -p "$CIRRUS_WORKING_DIR"
+    #  success_script: /bin/true
+    #
+    #trigger_nightly_release_task:
+    #  name: trigger-nightly-release
+    #  only_if: $CIRRUS_CRON == 'nightly'
+    #  container:
+    #    image: alpine:3
+    #  env:
+    #    GITHUB_TOKEN: ENCRYPTED[78c00056ec53c8575696ccc698a8252991e4805f2d8ab303c89a002f9e05aaf5c848f64c0335dc2892b3ac2318fcaa07]
+    #  install_dependencies_script: apk add curl git jo jq
+    #  trigger_release_script:
+    #    ./.ci/cirrus-release.sh gh_update_tag "$CIRRUS_REPO_FULL_NAME" nightly
