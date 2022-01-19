@@ -20,8 +20,6 @@ fn main() {
     let mut builder = bindgen::Builder::default()
         // Our header
         .header("wrapper.h")
-        // Import libc so our signatures are slightly nicer
-        .raw_line("use libc::{uid_t, gid_t, group, passwd};")
         .ctypes_prefix("libc")
         // Set macro constants to signed int, as all functions that accept
         // these constants use signed int as the parameter type
@@ -31,16 +29,12 @@ fn main() {
         // Blacklist varargs functions and related types for now
         // TODO: find a nice solution for this
         .blacklist_type("va_list")
+        .blacklist_type("__va_list")
         .blacklist_type("__builtin_va_list")
         .blacklist_type("__va_list_tag")
         .blacklist_function("pam_v.*")
         .blacklist_function("pam_syslog")
         .blacklist_function("pam_prompt")
-        // Blacklist types we use from libc
-        .blacklist_type(".*gid_t")
-        .blacklist_type(".*uid_t")
-        .blacklist_type("group")
-        .blacklist_type("passwd")
         // Whitelist all PAM constants
         .whitelist_var("PAM_.*")
         // Whitelist all PAM functions..
@@ -50,13 +44,21 @@ fn main() {
 
     // Platform-specific adaptions
     if cfg!(target_os = "linux") {
-        // On Linux we also use spwd from libc
-        builder = builder.raw_line("use libc::spwd;").blacklist_type("spwd");
+        // Import libc so our signatures are slightly nicer
+        builder = builder
+            .raw_line("use libc::{uid_t, gid_t, group, passwd, spwd};")
+            // Blacklist types we use from libc
+            .blacklist_type(".*gid_t")
+            .blacklist_type(".*uid_t")
+            .blacklist_type("group")
+            .blacklist_type("passwd")
+            .blacklist_type("spwd");
     } else if cfg!(target_os = "freebsd") {
         // XXX: this should include all OS that use openPAM
+        // Fix PAM_SILENT
         builder = builder
             .raw_line("pub const PAM_SILENT: libc::c_uint = 0x8000_0000;")
-            .blacklist_type("PAM_SILENT");
+            .blacklist_item("PAM_SILENT");
     }
 
     let bindings = builder
