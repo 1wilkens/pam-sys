@@ -9,8 +9,15 @@
 This crate uses [`bindgen`](https://github.com/rust-lang/rust-bindgen) to generate the raw FFI definitions for PAM. For a rustified API consider using [`pam`](https://github.com/1wilkens/pam).
 
 ## Supported Rust versions
-The library is only continuously built against Rust stable, beta and nightly but as it does not use a lot of new language features it should probably compile on older versions as well.
-If you encounter problems building on older versions and a small fix can be applied to make the build succeed, consider opening a pull request.
+The library is only continuously built against Rust stable, beta and nightly but as it does not use
+a lot of new language features it should probably compile on older versions as well. If you
+encounter problems building on older versions and a small fix can be applied to make the build
+succeed, consider opening a pull request.
+
+## Supported operating systems
+Currently this library is only thoroughly tested on Linux (due to the lack of reliable access to
+other platforms). However, support of all operating systems supported by PAM is an explicit goal.
+If you spot an error, please open an issue and I'll try to resolve it.
 
 ## License
 

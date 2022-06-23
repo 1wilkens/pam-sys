@@ -3,7 +3,7 @@
 //! This crate provides raw access to the Linux-PAM API.
 //! Constants, types and functions are supported and created with `bindgen`.
 //!
-//! Note: Currently only tested on linux as I lack access to other OSes at
+//! Note: Currently only tested on Linux as I lack access to other OSes at
 //! the moment. Both `build.rs` and `wrapper.h` probably need to be customized
 //! to exclude missing libraries such as `pam_misc` when they are not present.
 
