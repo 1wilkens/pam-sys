@@ -1,0 +1,7 @@
+#include "./linux-pam/pam_appl.h"
+#include "./linux-pam/pam_client.h"
+#include "./linux-pam/pam_ext.h"
+#include "./linux-pam/pam_filter.h"
+#include "./linux-pam/pam_misc.h"
+#include "./linux-pam/pam_modules.h"
+#include "./linux-pam/pam_modutil.h"

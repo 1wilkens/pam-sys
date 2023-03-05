@@ -14,4 +14,26 @@
     deref_nullptr
 )]
 
-include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PamImplementation {
+    LinuxPam,
+    OpenPam,
+}
+
+pub const LINKED_PAM_IMPLEMENTATION: PamImplementation = {
+    if cfg!(pam_sys_pam_impl = "linux-pam") {
+        PamImplementation::LinuxPam
+    } else {
+        PamImplementation::OpenPam
+    }
+};
+
+#[cfg(any(doc, pam_sys_pam_impl = "linux-pam"))]
+pub mod linux_pam {
+    include!(concat!(env!("OUT_DIR"), "/bindings-linux-pam.rs"));
+}
+
+#[cfg(any(doc, pam_sys_pam_impl = "openpam"))]
+pub mod openpam {
+    include!(concat!(env!("OUT_DIR"), "/bindings-openpam.rs"));
+}

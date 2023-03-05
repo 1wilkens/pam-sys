@@ -1,0 +1,6 @@
+#include "./openpam/pam_appl.h"
+#include "./openpam/openpam.h"
+#include "./openpam/openpam_version.h"
+#include "./openpam/pam_constants.h"
+#include "./openpam/pam_modules.h"
+#include "./openpam/pam_types.h"

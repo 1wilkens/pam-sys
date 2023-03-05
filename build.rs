@@ -5,34 +5,10 @@ use std::path::PathBuf;
 
 const PAM_IMPL_ENV_VAR: &str = "USE_PAM_IMPL";
 
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum PamImplementation {
     LinuxPam,
     OpenPam,
-}
-
-fn default_builder() -> bindgen::Builder {
-    bindgen::Builder::default()
-        // Our header
-        .header("wrapper.h")
-        // Use libc for c-types
-        .ctypes_prefix("libc")
-        // pam_handle_t is opaque
-        .opaque_type("pam_handle_t")
-        // Block varargs functions and related types for now
-        // TODO: find a nice solution for this
-        .blocklist_type("va_list")
-        .blocklist_type("__va_list")
-        .blocklist_type("__builtin_va_list")
-        .blocklist_type("__va_list_tag")
-        .blocklist_function("pam_v.*")
-        .blocklist_function("pam_syslog")
-        .blocklist_function("pam_prompt")
-
-        // Allow all PAM constants
-        .allowlist_var("PAM_.*")
-        // Allow all PAM functions..
-        .allowlist_function("pam_.*")
 }
 
 impl PamImplementation {
@@ -69,62 +45,108 @@ impl PamImplementation {
             Self::OpenPam => "openpam",
         }
     }
+
+    fn get_additional_libs(self) -> &'static [&'static str] {
+        match self {
+            Self::LinuxPam => &["pam_misc"],
+            Self::OpenPam => &[],
+        }
+    }
+
+    fn iter() -> std::slice::Iter<'static, PamImplementation> {
+        [Self::LinuxPam, Self::OpenPam].iter()
+    }
+
+    fn write_bindings(self, is_linked: bool) {
+        let base_folder = if is_linked { "wrappers" } else { "reflibs" };
+        let impl_name = self.impl_name();
+
+        let builder = bindgen::Builder::default()
+            // Our header
+            .header(&format!("{base_folder}/{impl_name}.h"))
+            // Use libc for c-types
+            .ctypes_prefix("libc")
+            // pam_handle_t is opaque
+            .opaque_type("pam_handle_t")
+            // Block varargs functions and related types for now
+            // TODO: find a nice solution for this
+            .blocklist_type("va_list")
+            .blocklist_type("__va_list")
+            .blocklist_type("__builtin_va_list")
+            .blocklist_type("__va_list_tag")
+            .blocklist_function("pam_v.*")
+            .blocklist_function("pam_syslog")
+            .blocklist_function("pam_prompt")
+            // Allow all PAM constants
+            .allowlist_var("PAM_.*")
+            // Allow all PAM functions..
+            .allowlist_function("pam_.*");
+
+        let builder = match self {
+            Self::LinuxPam => {
+                builder
+                    // Tell cargo to invalidate the built crate whenever the wrapper changes
+                    // Set macro constants to signed int, as all functions that accept these constants use
+                    // signed int as the parameter type
+                    .default_macro_constant_type(bindgen::MacroTypeVariation::Signed)
+                    // Use libc types so our signatures are slightly nicer
+                    .raw_line("use libc::{uid_t, gid_t, group, passwd, spwd};")
+                    .blocklist_type(".*gid_t")
+                    .blocklist_type(".*uid_t")
+                    .blocklist_type("group")
+                    .blocklist_type("passwd")
+                    .blocklist_type("spwd")
+            }
+            Self::OpenPam => {
+                builder
+                    // Use libc types so our signatures are slightly nicer
+                    .raw_line("use libc::passwd;")
+                    .blocklist_type("passwd")
+                    // Allow all PAM constants
+                    .allowlist_var("OPENPAM_.*")
+                    // Allow all PAM functions..
+                    .allowlist_function("openpam_.*")
+            }
+        };
+
+        let bindings = builder
+            // Finish the builder and generate the bindings.
+            .generate()
+            // Unwrap the Result and panic on failure.
+            .expect("Unable to generate bindings");
+
+        // Write the bindings to the $OUT_DIR/bindings-openpam.rs file.
+        let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
+        bindings
+            .write_to_file(out_path.join(&format!("bindings-{impl_name}.rs")))
+            .expect("Couldn't write bindings!");
+    }
 }
 
 fn main() {
-    // Tell cargo to tell rustc to link the system pam shared library.
-    println!("cargo:rustc-link-lib=pam");
-
     let pam_implementation = PamImplementation::resolve();
     println!(
         "cargo:rustc-cfg=pam_sys_pam_impl=\"{impl_name}\"",
         impl_name = pam_implementation.impl_name()
     );
 
-    use PamImplementation::{LinuxPam, OpenPam};
-
-    // pam_misc is only supported on Linux
-    if pam_implementation == LinuxPam {
-        println!("cargo:rustc-link-lib=pam_misc");
+    // Tell cargo to tell rustc to link the system pam shared library.
+    println!("cargo:rustc-link-lib=pam");
+    for additional_lib in pam_implementation.get_additional_libs() {
+        println!("cargo:rustc-link-lib={additional_lib}",);
     }
 
-    // Tell cargo to invalidate the built crate whenever the wrapper changes
-    println!("cargo:rerun-if-changed=wrapper.h");
+    println!("cargo:rerun-if-changed=wrappers");
+    println!("cargo:rerun-if-changed=reflibs");
 
-    // Prepare bindgen builder
+    pam_implementation.write_bindings(true);
 
-    // Platform-specific adaptions
-    match pam_implementation {
-        LinuxPam => {
-            builder = builder
-                // Set macro constants to signed int, as all functions that accept these constants use
-                // signed int as the parameter type
-                .default_macro_constant_type(bindgen::MacroTypeVariation::Signed)
-                // Use libc types so our signatures are slightly nicer
-                .raw_line("use libc::{uid_t, gid_t, group, passwd, spwd};")
-                .blocklist_type(".*gid_t")
-                .blocklist_type(".*uid_t")
-                .blocklist_type("group")
-                .blocklist_type("passwd")
-                .blocklist_type("spwd");
+    for other_impl in PamImplementation::iter() {
+        if *other_impl == pam_implementation {
+            continue;
         }
-        OpenPam => {
-            builder = builder
-                // Use libc types so our signatures are slightly nicer
-                .raw_line("use libc::passwd;")
-                .blocklist_type("passwd");
-        }
+
+        println!("cargo:warning=Generating bindings for {other_impl:?}");
+        other_impl.write_bindings(false);
     }
-
-    let bindings = builder
-        // Finish the builder and generate the bindings.
-        .generate()
-        // Unwrap the Result and panic on failure.
-        .expect("Unable to generate bindings");
-
-    // Write the bindings to the $OUT_DIR/bindings.rs file.
-    let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
-    bindings
-        .write_to_file(out_path.join("bindings.rs"))
-        .expect("Couldn't write bindings!");
 }
