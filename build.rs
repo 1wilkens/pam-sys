@@ -29,6 +29,7 @@ fn main() {
         .blocklist_type("va_list")
         .blocklist_type("__va_list")
         .blocklist_type("__builtin_va_list")
+        .blocklist_type("__gnuc_va_list")
         .blocklist_type("__va_list_tag")
         .blocklist_function("pam_v.*")
         .blocklist_function("pam_syslog")
