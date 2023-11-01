@@ -6,13 +6,14 @@
 [![Build Status Cirrus](https://img.shields.io/cirrus/github/1wilkens/pam-sys/master?style=flat-square)](https://cirrus-ci.com/github/1wilkens/pam-sys)
 [![License](https://img.shields.io/crates/l/pam-sys.svg?branch=master)](https://travis-ci.org/1wilkens/pam-sys)
 
-This crate uses [`bindgen`](https://github.com/rust-lang/rust-bindgen) to generate the raw FFI definitions for PAM. For a rustified API consider using [`pam`](https://github.com/1wilkens/pam).
+This crate uses [`bindgen`](https://github.com/rust-lang/rust-bindgen) to generate the raw FFI
+definitions for PAM. For a rustified API consider using [`pam`](https://github.com/1wilkens/pam).
 
-## Supported Rust versions
+## Supported Rust versions (MSRV)
 The library is only continuously built against Rust stable, beta and nightly but as it does not use
-a lot of new language features it should probably compile on older versions as well. If you
-encounter problems building on older versions and a small fix can be applied to make the build
-succeed, consider opening a pull request.
+a lot of new language features it should probably compile on older versions as well. The MSRV is
+mostly determined by the version of `bindgen` used. If you encounter problems building on older
+versions and a small fix can be applied to make the build succeed, consider opening a pull request.
 
 ## Supported operating systems
 Currently this library is only thoroughly tested on Linux (due to the lack of reliable access to
@@ -30,7 +31,6 @@ at your option.
 
 ### Contribution
 
-Unless you explicitly state otherwise, any contribution intentionally
-submitted for inclusion in the work by you, as defined in the Apache-2.0
-license, shall be dual licensed as above, without any additional terms or
-conditions.
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in
+the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
+additional terms or conditions.
