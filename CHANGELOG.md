@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Changed
+- Blocklist `__gnuc_va_list` to fix build on some Linux systems
 - Bump `bindgen` to `0.68` and disable default features to reduce dependency footprint (credits to @zombiepigdragon)
 
 ## [1.0.0-alpha4] - 2022-01-19
