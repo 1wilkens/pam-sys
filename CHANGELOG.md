@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.0.0-alpha5] - 2023-11-01
 ### Changed
 - Blocklist `__gnuc_va_list` to fix build on some Linux systems
 - Bump `bindgen` to `0.68` and disable default features to reduce dependency footprint (credits to @zombiepigdragon)
@@ -130,7 +131,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - PamHandle from empty struct to zero variant enum (as recommended in [the Rust Book](https://doc.rust-lang.org/nightly/book/ffi.html#representing-opaque-structs))
 
 
-[Unreleased]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha4...HEAD
+[Unreleased]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha5...HEAD
+[1.0.0-alpha5]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha4...v1.0.0-alpha5
 [1.0.0-alpha4]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha3...v1.0.0-alpha4
 [1.0.0-alpha3]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha2...v1.0.0-alpha3
 [1.0.0-alpha2]: https://github.com/1wilkens/pam-sys/compare/v1.0.0-alpha1...v1.0.0-alpha2
