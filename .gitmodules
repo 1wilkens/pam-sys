@@ -1,0 +1,6 @@
+[submodule "linux-pam"]
+	path = linux-pam
+	url = https://github.com/linux-pam/linux-pam.git
+[submodule "OpenPAM"]
+	path = OpenPAM
+	url = https://git.des.dev/OpenPAM/OpenPAM.git

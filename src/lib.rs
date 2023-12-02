@@ -14,4 +14,37 @@
     deref_nullptr
 )]
 
-include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum PamImplementation {
+    LinuxPAM,
+    OpenPAM,
+}
+
+pub const PAM_IMPLEMENTATION: PamImplementation = {
+    #[cfg(PAM_SYS_IMPL = "linux-pam")]
+    {
+        PamImplementation::LinuxPAM
+    }
+
+    #[cfg(PAM_SYS_IMPL = "openpam")]
+    {
+        PamImplementation::OpenPAM
+    }
+
+    #[cfg(not(any(
+        PAM_SYS_IMPL = "linux-pam",
+        PAM_SYS_IMPL = "openpam",
+    )))]
+    compile_error!("No valid PAM implementation selected")
+};
+
+#[cfg(any(doc, PAM_SYS_IMPL = "linux-pam"))]
+pub mod linux_pam;
+#[cfg(any(doc, PAM_SYS_IMPL = "openpam"))]
+pub mod openpam;
+
+#[cfg(PAM_SYS_IMPL = "linux-pam")]
+pub use linux_pam::*;
+
+#[cfg(PAM_SYS_IMPL = "openpam")]
+pub use openpam::*;
