@@ -10,7 +10,7 @@ categories = ["authentication", "api-bindings", "external-ffi-bindings", "os::un
 repository = "https://github.com/1wilkens/pam-sys.git"
 documentation = "https://docs.rs/pam-sys/"
 readme = "README.md"
-include = [ "LICENSE-*", "README.md", "CHANGELOG.md", "src/lib.rs", "build.rs", "wrapper.h"]
+include = [ "LICENSE-*", "README.md", "CHANGELOG.md", "src/lib.rs", "build.rs" ]
 
 edition = "2018"
 build = "build.rs"
@@ -21,6 +21,3 @@ azure-devops = { project = "1wilkens/ci", pipeline = "pam-sys" }
 
 [dependencies]
 libc = "^0.2.65"
-
-[build-dependencies]
-bindgen = { version = "0.69", default-features = false }

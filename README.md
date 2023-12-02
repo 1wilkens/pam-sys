@@ -20,6 +20,19 @@ Currently this library is only thoroughly tested on Linux (due to the lack of re
 other platforms). However, support of all operating systems supported by PAM is an explicit goal.
 If you spot an error, please open an issue and I'll try to resolve it.
 
+## Building the bindings
+
+The bindings are generated using [bindgen] ahead-of-time. This is done
+ahead-of-time to generate both bindings to LinuxPAM and OpenPAM in the
+documentation. The bindings are kept in `src/linux_pam.rs` and `src/openpam.rs`.
+The `bindgen.py` script generates these bindings. This scripts depends on
+[bindgen-cli] and `libclang`.
+
+```bash
+git submodule update --init
+python bindgen.py
+```
+
 ## License
 
 Licensed under either of
@@ -34,3 +47,6 @@ at your option.
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in
 the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
 additional terms or conditions.
+
+[bindgen]: https://github.com/rust-lang/rust-bindgen
+[bindgen-cli]: https://rust-lang.github.io/rust-bindgen/command-line-usage.html
