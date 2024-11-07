@@ -4,20 +4,26 @@ use std::env;
 use std::path::PathBuf;
 
 fn main() {
-    // Tell cargo to tell rustc to link the system pam
-    // shared library.
-    println!("cargo:rustc-link-lib=pam");
-
-    // pam_misc is only supported on Linux afaik
-    if cfg!(target_os = "linux") {
-        println!("cargo:rustc-link-lib=pam_misc");
-    }
-
     // Tell cargo to invalidate the built crate whenever the wrapper changes
     println!("cargo:rerun-if-changed=wrapper.h");
 
     // Prepare bindgen builder
-    let mut builder = bindgen::Builder::default()
+    let mut builder = bindgen::Builder::default();
+
+    if cfg!(feature = "dylib") {
+        builder = builder.dynamic_library_name("pam");
+    } else {
+        // Tell cargo to tell rustc to link the system pam
+        // shared library.
+        println!("cargo:rustc-link-lib=pam");
+
+        // pam_misc is only supported on Linux afaik
+        if cfg!(target_os = "linux") {
+            println!("cargo:rustc-link-lib=pam_misc");
+        }
+    }
+
+    builder = builder
         // Our header
         .header("wrapper.h")
         // Use libc for c-types

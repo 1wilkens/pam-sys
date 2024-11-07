@@ -21,6 +21,10 @@ azure-devops = { project = "1wilkens/ci", pipeline = "pam-sys" }
 
 [dependencies]
 libc = "^0.2.65"
+libloading = { version = "0.8", optional = true }
 
 [build-dependencies]
-bindgen = { version = "0.69", default-features = false }
+bindgen = { version = "0.70" }
+
+[features]
+dylib = ["dep:libloading"]
