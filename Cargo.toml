@@ -5,12 +5,24 @@ version = "1.0.0-alpha5"
 authors = ["Florian Wilkens <gh@1wilkens.org>"]
 description = "FFI wrappers for the Linux Pluggable Authentication Modules (PAM)"
 license = "MIT OR Apache-2.0"
-categories = ["authentication", "api-bindings", "external-ffi-bindings", "os::unix-apis"]
+categories = [
+  "authentication",
+  "api-bindings",
+  "external-ffi-bindings",
+  "os::unix-apis",
+]
 
 repository = "https://github.com/1wilkens/pam-sys.git"
 documentation = "https://docs.rs/pam-sys/"
 readme = "README.md"
-include = [ "LICENSE-*", "README.md", "CHANGELOG.md", "src/lib.rs", "build.rs", "wrapper.h"]
+include = [
+  "LICENSE-*",
+  "README.md",
+  "CHANGELOG.md",
+  "src/lib.rs",
+  "build.rs",
+  "wrapper.h",
+]
 
 edition = "2018"
 build = "build.rs"
@@ -23,4 +35,4 @@ azure-devops = { project = "1wilkens/ci", pipeline = "pam-sys" }
 libc = "^0.2.65"
 
 [build-dependencies]
-bindgen = { version = "0.69", default-features = false }
+bindgen = { version = "0.72.0", default-features = false }
