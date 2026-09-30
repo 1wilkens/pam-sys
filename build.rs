@@ -58,6 +58,9 @@ fn main() {
     } else if cfg!(target_os = "freebsd") || cfg!(target_os = "netbsd") {
         // XXX: this should include all OS that use openPAM
         builder = builder
+            // OpenPAM declares item types and message styles in named enums
+            .allowlist_type("openpam_.*")
+            .prepend_enum_name(false)
             // Use libc types so our signatures are slightly nicer
             .raw_line("use libc::passwd;")
             .blocklist_type("passwd");
